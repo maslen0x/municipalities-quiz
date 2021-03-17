@@ -1,9 +1,11 @@
 import { combineReducers } from 'redux'
 
 import municipalities from './municipalities'
+import questions from './questions'
 
 const rootReducer = combineReducers({
-  municipalities
+  municipalities,
+  questions
 })
 
 export default rootReducer

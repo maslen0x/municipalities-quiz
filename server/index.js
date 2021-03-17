@@ -4,6 +4,7 @@ import cors from 'cors'
 import dotenv from 'dotenv'
 
 import municipalitiesRouter from './routes/municipalities.js'
+import questionsRouter from './routes/questions.js'
 
 dotenv.config()
 
@@ -24,6 +25,7 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 app.use('/api/municipalities', municipalitiesRouter)
+app.use('/api/questions', questionsRouter)
 
 const start = async () => {
   try {
