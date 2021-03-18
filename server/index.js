@@ -5,6 +5,7 @@ import dotenv from 'dotenv'
 
 import municipalitiesRouter from './routes/municipalities.js'
 import questionsRouter from './routes/questions.js'
+import usersRouter from './routes/users.js'
 
 dotenv.config()
 
@@ -24,6 +25,7 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
+app.use('/api/users', usersRouter)
 app.use('/api/municipalities', municipalitiesRouter)
 app.use('/api/questions', questionsRouter)
 

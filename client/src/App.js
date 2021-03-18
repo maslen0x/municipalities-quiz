@@ -1,40 +1,50 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { Switch, Route, Redirect } from 'react-router-dom'
 
+import Quiz from './pages/Quiz'
+import Auth from './pages/Auth'
+import Questions from './pages/Questions'
+
+import Header from './components/Header'
+import Sidebar from './components/Sidebar'
+
+import { auth } from './actions/user'
 import { fetchMunicipalities } from './actions/municipalities'
 import { fetchQuestions } from './actions/questions'
 
 const App = () => {
   const dispatch = useDispatch()
 
-  const municipalities = useSelector(({ municipalities }) => municipalities)
-  const questions = useSelector(({ questions }) => questions)
+  const user = useSelector(({ user }) => user.currentUser)
+  const isReady = useSelector(({ user }) => user.isReady)
 
   useEffect(() => {
+    const token = localStorage.getItem('token')
+    dispatch(auth(token))
     dispatch(fetchMunicipalities())
     dispatch(fetchQuestions())
   }, [dispatch])
 
-  return (
-    <div className="wrapper">
-      <select name="municipalities[]" defaultValue="DEFAULT" className="select">
-        <option value="DEFAULT" disabled>Выберите муниципальное образование</option>
-        {municipalities && (
-          municipalities.map(municipality => (
-            <option key={municipality._id} value={municipality.name}>{municipality.name}</option>
-          ))
-        )}
-      </select>
-      <div>
-        {questions && questions.map(question => (
-          <div style={{ maxWidth: 1200, margin: '15px auto' }}>
-            <b>{question.number}</b>
-            <p>{question.indicator}</p>
-            <small>{question.description}</small>
-          </div>
-        ))}
+  return isReady && (
+    user ? (
+      <div className="page">
+        <Header />
+        <Sidebar />
+        <main className="main">
+          <Switch>
+            <Route path="/questions" component={Questions} />
+            <Redirect to="/questions" />
+          </Switch>
+        </main>
       </div>
-    </div>
+    ) : (
+      <Switch>
+        <Route exact path="/" component={Quiz} />
+        <Route path="/login" component={Auth} />
+        <Redirect to="/" />
+      </Switch>
+    )
   )
 }
 
