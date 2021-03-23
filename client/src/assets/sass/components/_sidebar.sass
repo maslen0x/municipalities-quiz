@@ -1,0 +1,19 @@
+.sidebar
+  grid-row: 1 / span 2
+  grid-column: 1
+  background-color: $dark
+  color: $white
+  padding: 15px 0
+  &__title
+    padding: 0 15px
+    margin-bottom: 15px
+
+.nav
+  &__link
+    display: block
+    line-height: 30px
+    padding: 0 15px
+    &.active,
+    &:hover,
+    &:focus
+      background-color: lighten($dark, 10%) //#3d4652

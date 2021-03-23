@@ -25,8 +25,22 @@ const Auth = () => {
     <section className="auth">
       <form onSubmit={onLogin} className="auth__form">
         <h2 className="auth__title title">Авторизация</h2>
-        <input onChange={onInputChange} value={form.login} type="text" name="login" placeholder="Логин" className="auth__input input" />
-        <input onChange={onInputChange} value={form.password} type="password" name="password" placeholder="Пароль" className="auth__input input" />
+        <input
+          onChange={onInputChange}
+          value={form.login}
+          type="text"
+          name="login"
+          placeholder="Логин"
+          className="auth__input input"
+        />
+        <input
+          onChange={onInputChange}
+          value={form.password}
+          type="password"
+          name="password"
+          placeholder="Пароль"
+          className="auth__input input"
+        />
         <button className="auth__btn btn">Вход</button>
       </form>
     </section>

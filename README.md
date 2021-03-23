@@ -7,10 +7,10 @@ question {
 
   //необязательные (в зависимости от типа)
 
+  units: string (for AVERAGE) (единицы измерения)
+
   criteries: [string] (for AVERAGE & SCORES & CHECKBOXES)
   (example for AVERAGE ['(t)i – время подключения к электросетям для респондента i'])
-
-  (сделать позже!) unit: string (for AVERAGE) (единицы измерения)
 
   m: string (for PERCENTS) (описание самого параметра) (example количество земельных участков, выставленных на аукцион в отчетном году)
   h: string (for PERCENTS) (описание самого параметра) (example количество земельных участков, выставленных на аукцион в предыдущем году)

@@ -29,7 +29,7 @@ const user = (state = initialState, action) => {
       return {
         ...state,
         token: null,
-        user: null
+        currentUser: null
       }
   
     default:

@@ -1,0 +1,22 @@
+.info
+  &__title
+    max-width: 400px
+    text-align: center
+    margin: 0 auto 15px
+  &__ol,
+  &__ol > li
+    list-style-type: decimal
+    list-style-position: inside
+    text-indent: 30px
+  &__ol
+    & > li
+      &:not(:last-child)
+        margin-bottom: 5px
+  &__ul
+    & > li
+      &:not(:last-child)
+        &::after
+          content: ';'
+      &:last-child
+        &::after
+          content: '.'

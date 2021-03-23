@@ -1,0 +1,46 @@
+$dark: #13232b
+$white: #fcfcfe
+$blue: #406c8e
+$light-blue: #7dadd3
+$shadow: 0 3px 15px rgba($dark, .2)
+
+html,
+body
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif
+  font-size: 16px
+  line-height: 1.2
+  overflow-x: hidden
+
+.container
+  max-width: 1200px
+  margin: 0 auto
+
+.page
+  width: 100vw
+  min-height: 100vh
+  display: grid
+  grid-template-columns: 200px 1fr
+  grid-template-rows: 60px 1fr
+
+.main
+  grid-row: 2
+  grid-column: 2
+  padding: 15px
+
+.title
+  font-size: 18px
+  font-weight: 400
+
+.input
+  height: 30px
+  border: 1px solid $light-blue
+  padding: 0 5px
+
+.btn
+  line-height: 30px
+  color: $white
+  background-color: $light-blue
+  padding: 0 15px
+
+.select
+  border: 1px solid $light-blue

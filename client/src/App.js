@@ -4,7 +4,10 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 
 import Quiz from './pages/Quiz'
 import Auth from './pages/Auth'
-import Questions from './pages/Questions'
+import Info from './pages/Info'
+import Indicators from './pages/Indicators'
+import Results from './pages/Results'
+import Report from './pages/Report'
 
 import Header from './components/Header'
 import Sidebar from './components/Sidebar'
@@ -16,8 +19,10 @@ import { fetchQuestions } from './actions/questions'
 const App = () => {
   const dispatch = useDispatch()
 
-  const user = useSelector(({ user }) => user.currentUser)
   const isReady = useSelector(({ user }) => user.isReady)
+  const user = useSelector(({ user }) => user.currentUser)
+  const municipalities = useSelector(({ municipalities }) => municipalities)
+  const questions = useSelector(({ questions }) => questions)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
@@ -26,15 +31,22 @@ const App = () => {
     dispatch(fetchQuestions())
   }, [dispatch])
 
-  return isReady && (
+  const routes = [
+    { path: '/', exact: true, component: Info },
+    { path: '/indicators', component: Indicators },
+    { path: '/results/:id', component: Report },
+    { path: '/results', component: Results }
+  ]
+
+  return isReady && municipalities && questions ? (
     user ? (
       <div className="page">
-        <Header />
         <Sidebar />
+        <Header />
         <main className="main">
           <Switch>
-            <Route path="/questions" component={Questions} />
-            <Redirect to="/questions" />
+            {routes.map(route => <Route key={route.path} exact={route.exact} path={route.path} component={route.component} />)}
+            <Redirect to="/" />
           </Switch>
         </main>
       </div>
@@ -45,7 +57,7 @@ const App = () => {
         <Redirect to="/" />
       </Switch>
     )
-  )
+  ) : 'Загрузка...'
 }
 
 export default App

@@ -1,32 +1,69 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useState, useEffect } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+
+import Question from '../components/Question'
+
+import { setQuiz, fetchQuiz } from '../actions/quiz'
 
 const Quiz = () => {
+  const dispatch = useDispatch()
+
+  const [municipality, setMunicipality] = useState(null)
+
   const municipalities = useSelector(({ municipalities }) => municipalities)
   const questions = useSelector(({ questions }) => questions)
+  const quiz = useSelector(({ quiz }) => quiz)
+
+  const onSend = () => {
+    if(!municipality)
+      return alert('Выберите муниципальное образование')
+
+    if(quiz.length < questions.length) {
+      const left = questions.length - quiz.length
+      return alert(`Введите все показатели, осталось ${left}`)
+    }
+
+    const data = quiz.map(question => ({ ...question, municipality, date: Date.now() }))
+    fetchQuiz(data)
+
+    // localStorage.removeItem('quiz')
+    // dispatch(setQuiz([]))
+  }
+
+  const onSelect = e => {
+    const currentMunicipality = e.target.value
+    setMunicipality(currentMunicipality)
+    localStorage.setItem('municipality', currentMunicipality)
+  }
+
+  useEffect(() => {
+    const currentMunicipality = localStorage.getItem('municipality')
+    currentMunicipality && setMunicipality(currentMunicipality)
+  }, [])
+
+  useEffect(() => {
+    quiz.length && localStorage.setItem('quiz', JSON.stringify(quiz))
+  }, [quiz])
+
+  useEffect(() => {
+    const localQuiz = JSON.parse(localStorage.getItem('quiz'))
+    localQuiz && dispatch(setQuiz(localQuiz))
+  }, [dispatch])
 
   return (
-    <div className="wrapper">
-      {municipalities && questions ? (
-        <>
-          <select name="municipalities[]" defaultValue="DEFAULT" className="select">
-            <option value="DEFAULT" disabled>Выберите муниципальное образование</option>
-            {municipalities.map(municipality => (
-                <option key={municipality._id} value={municipality.name}>{municipality.name}</option>
-            ))}
-          </select>
-          <div>
-            {questions.map(question => (
-              <div key={question._id} style={{ maxWidth: 1200, margin: '15px auto' }}>
-                <b>{question.number}</b>
-                <p>{question.indicator}</p>
-                <small>{question.description}</small>
-              </div>
-            ))}
-          </div>
-        </>
-      ) : 'Загрузка...'}
-      
+    <div className="container">
+      <div className="quiz">
+        <select onChange={onSelect} value={municipality || 'DEFAULT'} name="municipalities[]" className="quiz__select select">
+          <option value="DEFAULT" disabled>Выберите муниципальное образование</option>
+          {municipalities.map(municipality => (
+            <option key={municipality._id} value={municipality._id}>{municipality.name}</option>
+          ))}
+        </select>
+        <div className="quiz__questions">
+          {questions.map(question => <Question key={question._id} {...question} />)}
+        </div>
+        <button onClick={onSend} className="quiz__btn btn">Отправить</button>
+      </div>
     </div>
   )
 }

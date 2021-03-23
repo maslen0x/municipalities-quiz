@@ -8,6 +8,7 @@ const questionSchema = new Schema({
   description: { type: String },
   type: { type: String },
   source: { type: String },
+  units: { type: String },
   criteries: [{ type: String }],
   m: { type: String },
   h: { type: String }

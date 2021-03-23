@@ -10,5 +10,5 @@ const setQuestions = payload => ({
 export const fetchQuestions = () => dispatch => {
   axios.get('/api/questions')
     .then(({ data }) => dispatch(setQuestions(data)))
-    .catch(console.log)
+    .catch(e => alert(e.response.data.message))
 }

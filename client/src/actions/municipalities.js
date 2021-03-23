@@ -10,5 +10,5 @@ const setMunicipalities = payload => ({
 export const fetchMunicipalities = () => dispatch => {
   axios.get('/api/municipalities')
     .then(({ data }) => dispatch(setMunicipalities(data)))
-    .catch(console.log)
+    .catch(e => alert(e.response.data.message))
 }
