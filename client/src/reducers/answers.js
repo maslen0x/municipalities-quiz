@@ -1,9 +1,9 @@
 import { SET_SHORT_ANSWERS, SET_FULL_ANSWERS, SET_RATING, SET_ANSWERS_YEARS, SET_ANSWERS_LOADING } from '../constants'
 
 const initialState = {
-  short: null,
+  short: [],
   full: null,
-  rating: null,
+  rating: [],
   years: null,
   isLoading: false
 }

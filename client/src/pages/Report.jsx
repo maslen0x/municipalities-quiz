@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 
 import Answer from '../components/Answer'
 
-import { fetchFullAnswer } from '../actions/answers'
+import { fetchFullAnswer, setFullAnswers } from '../actions/answers'
 
 import getMunicipalityName from '../utils/getMunicipalityName'
 
@@ -22,13 +22,17 @@ const Report = () => {
 
   useEffect(() => {
     dispatch(fetchFullAnswer(token, id))
+    return () => dispatch(setFullAnswers(null))
   }, [dispatch, token, id])
 
   useEffect(() => {
-    const newAnswers = answers && [...answers]
-      .map(answer => ({ ...answer, question: questions.find(question => question._id === answer.question) }))
-      .sort((a, b) => (a.question.number > b.question.number && 1) || (a.question.number < b.question.number && -1) || 0)
-    setParsedAnswers(newAnswers)
+    const mapped = answers && [...answers]
+      .map(answer => ({
+        ...answer,
+        question: questions.find(question => question._id === answer.question)
+      }))
+      .sort((a, b) => a.question.number > b.question.number ? 1 : -1)
+    setParsedAnswers(mapped)
   }, [answers, questions])
 
   return (

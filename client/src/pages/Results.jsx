@@ -7,35 +7,27 @@ import Filter from '../components/Filter'
 
 import { fetchShortAnswers } from '../actions/answers'
 
-import getMunicipalityName from '../utils/getMunicipalityName'
-import getYear from '../utils/getYear'
+import getQueryString from '../utils/getQueryString'
 
 const Results = () => {
   const dispatch = useDispatch()
 
   const sortOptions = [
-    { value: 'alphabet', label: 'По алфавиту' },
+    { value: 'municipality', label: 'По названию МО' },
     { value: 'date', label: 'По дате' }
   ]
 
-  const [sortedAnswers, setSortedAnswers] = useState(null)
-  const [filteredAnswers, setFilteredAnswers] = useState(null)
-
-  const [sort, setSort] = useState('DEFAULT')
   const [filters, setFilters] = useState({
     municipality: 'DEFAULT',
-    year: 'DEFAULT'
+    date: 'DEFAULT',
+    sort: 'DEFAULT'
   })
 
   const token = useSelector(({ user }) => user.token)
   const answers = useSelector(({ answers }) => answers.short)
   const years = useSelector(({ answers }) => answers.years)
+  const isLoading = useSelector(({ answers }) => answers.isLoading)
   const municipalities = useSelector(({ municipalities }) => municipalities)
-
-  const onSortChange = e => {
-    const { value } = e.target
-    setSort(value)
-  }
 
   const onFilterChange = e => {
     const { name, value } = e.target
@@ -47,55 +39,21 @@ const Results = () => {
   }, [dispatch, token])
 
   useEffect(() => {
-    const copy = answers && [...answers]
-    const getSort = (sort, answers) => {
-      switch(sort) {
-        case 'alphabet': {
-          const newAnswers = answers.sort((a, b) => {
-            return getMunicipalityName(municipalities, a.municipality) > getMunicipalityName(municipalities, b.municipality) ? 1 : -1
-          })
-          return newAnswers
-        }
-
-        case 'date': {
-          const newAnswers = answers.sort((a, b) => a.date < b.date ? 1 : -1)
-          return newAnswers
-        }
-
-        default:
-          return answers
-      }
-    }
-    setSortedAnswers(getSort(sort, copy))
-  }, [sort, answers, municipalities])
-
-  useEffect(() => {
-    const newAnswers = sortedAnswers && sortedAnswers.filter(quiz => {
-      if(filters.municipality === 'DEFAULT' && filters.year !== 'DEFAULT')
-        return filters.year === getYear(quiz.date).toString() && quiz
-
-      if(filters.municipality !== 'DEFAULT' && filters.year === 'DEFAULT')
-        return filters.municipality === quiz.municipality && quiz
-
-      if(filters.municipality !== 'DEFAULT' && filters.year !== 'DEFAULT')
-        return filters.municipality === quiz.municipality && filters.year === getYear(quiz.date).toString() && quiz
-
-      return quiz
-    })
-    setFilteredAnswers(newAnswers)
-  }, [sortedAnswers, filters])
+    const query = getQueryString(filters)
+    dispatch(fetchShortAnswers(token, query))
+  }, [filters])
 
   //TODO сделать редактирование ответов на странице с анкетов
-  //TODO педелать говнокод с фильтрами (мб сделать фильтрацию/сортировку на бэкенде)
 
   return (
     <div className="results">
       <div className="results__container container">
         <div className="results__header">
           <Sort
-            onChange={onSortChange}
+            onChange={onFilterChange}
             options={sortOptions}
             caption="Сортировка"
+            name="sort"
             className="results__sort"
           />
           <div className="results__filters filters">
@@ -105,7 +63,7 @@ const Results = () => {
                   <option key={municipality._id} value={municipality._id}>{municipality.name}</option>
                 ))}
               </Filter>
-              <Filter onChange={onFilterChange} caption="Год" name="year">
+              <Filter onChange={onFilterChange} caption="Год" name="date">
                 {years.map(year => (
                   <option key={year} value={year}>{year}</option>
                 ))}
@@ -113,17 +71,17 @@ const Results = () => {
             </ul>
           </div>
         </div>
-        {filteredAnswers ? (
           <ul className="results__list">
-            {filteredAnswers.length ? (
-              filteredAnswers.map(quiz => (
-                <li key={`${quiz.municipality}${quiz.date}`} className="results__item">
-                  <ResultsCard {...quiz} />
-                </li>
-              ))
-            ) : 'Список отчетов пуст'}
+            {!isLoading ? (
+              answers.length ? (
+                answers.map(quiz => (
+                  <li key={`${quiz.municipality}${quiz.date}`} className="results__item">
+                    <ResultsCard {...quiz} />
+                  </li>
+                ))
+              ) : 'Список пуст'
+            ) : 'Загрузка...'}
           </ul>
-        ) : 'Загрузка...'}
       </div>
     </div>
   )

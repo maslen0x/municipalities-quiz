@@ -6,7 +6,7 @@ const setShortAnswers = payload => ({
   payload
 })
 
-const setFullAnswers = payload => ({
+export const setFullAnswers = payload => ({
   type: SET_FULL_ANSWERS,
   payload
 })
@@ -26,11 +26,15 @@ const setLoading = payload => ({
   payload
 })
 
-export const fetchShortAnswers = token => dispatch => {
-  axios.get('/api/answers/short', {
+export const fetchShortAnswers = (token, query = '') => dispatch => {
+  dispatch(setLoading(true))
+  axios.get(`/api/answers/short?${query}`, {
     headers: { Authorization: token }
   })
-    .then(({ data }) => dispatch(setShortAnswers(data)))
+    .then(({ data }) => {
+      dispatch(setShortAnswers(data))
+      dispatch(setLoading(false))
+    })
     .catch(e => alert(e.response.data.message))
 }
 

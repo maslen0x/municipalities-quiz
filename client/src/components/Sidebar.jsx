@@ -16,11 +16,14 @@ const Sidebar = () => {
 
   const checkActiveLink = href => activeLink === href ? 'active' : ''
 
-  history.listen(() => setActiveLink(history.location.pathname))
+  history.listen(() => {
+    const link = `/${history.location.pathname.split('/')[1]}`
+    setActiveLink(link)
+  })
 
   useEffect(() => {
-    setActiveLink(history.location.pathname)
-    return () => setActiveLink(null)
+    const link = `/${history.location.pathname.split('/')[1]}`
+    setActiveLink(link)
   }, [history.location.pathname])
 
   return (

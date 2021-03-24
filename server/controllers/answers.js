@@ -1,8 +1,11 @@
 import Answer from '../models/Answer.js'
 import Question from '../models/Question.js'
+import Municipality from '../models/Municipality.js'
 import User from '../models/User.js'
 
 import groupArrayByField from '../utils/groupArrayByField.js'
+import countAnswerResult from '../utils/countAnswerResult.js'
+import getMunicipalityName from '../utils/getMunicipalityName.js'
 import getYear from '../utils/getYear.js'
 
 export const sendQuiz = async (req, res) => {
@@ -30,8 +33,21 @@ export const getShortInfo = async (req, res) => {
     if(!user)
       return res.status(403).json({ message: 'Недостаточно доступа для выполнения операции' })
 
-    const answers = await Answer.find()
+    const { municipality, date, sort } = req.query
+
+    const filters = {
+      municipality,
+      date
+    }
+
+    if(filters.date)
+      filters.date = { $gt: new Date(date), $lt: new Date((+date + 1).toString()) }
+
+    const query = Object.keys(filters).reduce((obj, key) => filters[key] ? { ...obj, [key]: filters[key] } : obj, {})
+
+    const answers = await Answer.find(query)
     const questions = await Question.find()
+    const municipalities = await Municipality.find()
 
     const groupedByMunicipality = groupArrayByField(answers, 'municipality')
 
@@ -42,64 +58,40 @@ export const getShortInfo = async (req, res) => {
     const counted = groupedByDate.map(quiz => {
       return quiz.map(answer => {
         const question = questions.find(question => question._id.toString() === answer.question.toString())
-        const { _id, evaluations, m, h } = answer
+        const { _id } = answer
         const { type, number, indicator } = question
 
-        switch(type) {
-          case 'AVERAGE': {
-            const average = evaluations[0].reduce((sum, next) => sum += +next, 0) / evaluations[0].length
-            const result = average.toFixed(2)
-            return {
-              _id,
-              number,
-              indicator,
-              result
-            }
-          }
-
-          case 'SCORES': {
-            const sums = evaluations.map(value => value.reduce((sum, next) => sum += +next, 0))
-            const all = sums.reduce((sum, next) => sum += next, 0)
-            const result = (all / evaluations.length).toFixed(2)
-            return {
-              _id,
-              number,
-              indicator,
-              result
-            }
-          }
-
-          case 'CHECKBOXES': {
-            const sums = evaluations.map(value => value.reduce((sum, next) => sum += +next, 0))
-            const scores = sums.map(sum => sum === 3 ? (sum * 3) + 1 : sum * 3)
-            const result = scores.reduce((sum, next) => sum+= next, 0).toFixed(2)
-            return {
-              _id,
-              number,
-              indicator,
-              result
-            }
-          }
-
-          case 'PERCENTS':
-            return {
-              _id,
-              number,
-              indicator,
-              result: ((m / h) * 100).toFixed(2)
-            }
-
-          default:
-            return answer
+        const obj = {
+          _id,
+          number,
+          indicator
         }
+
+        return countAnswerResult(answer, type, obj)
       })
     })
 
-    const result = counted.map((quiz, index) => ({
-      municipality: groupedByDate[index][0].municipality,
-      date: groupedByDate[index][0].date,
-      answers: quiz.sort((a, b) => (a.number > b.number && 1) || (a.number < b.number && -1) || 0)
-    }))
+    const mapped = counted.map((quiz, index) => {
+      const { municipality, date } = groupedByDate[index][0]
+      return {
+        municipality,
+        date,
+        answers: quiz.sort((a, b) => a.number > b.number ? 1 : -1)
+      }
+    })
+
+    const result = mapped.sort((a, b) => {
+      switch(sort) {
+        case 'date':
+          return a.date < b.date ? 1 : -1
+
+        case 'municipality':
+          return getMunicipalityName(municipalities, a.municipality) > getMunicipalityName(municipalities, b.municipality) ? 1 : -1
+
+        default:
+          return null
+      }
+    })
 
     return res.json(result)
   } catch (e) {
@@ -138,14 +130,19 @@ export const getRating = async (req, res) => {
     if(!user)
       return res.status(403).json({ message: 'Недостаточно доступа для выполнения операции' })
 
-    const { date } = req.query
+    const { municipality, date } = req.query
 
-    const filters = { ...req.query }
+    const filters = {
+      municipality,
+      date
+    }
 
-    if(filters.hasOwnProperty('date'))
+    if(filters.date)
       filters.date = { $gt: new Date(date), $lt: new Date((+date + 1).toString()) }
 
-    const answers = await Answer.find(filters)
+    const query = Object.keys(filters).reduce((obj, key) => filters[key] ? { ...obj, [key]: filters[key] } : obj, {})
+
+    const answers = await Answer.find(query)
     const questions = await Question.find()
 
     const groupedByYear = Object.values(answers.reduce((acc, el) => {
@@ -161,7 +158,7 @@ export const getRating = async (req, res) => {
         return questionGroup
           .map(answer => {
             const question = questions.find(question => question._id.toString() === answer.question.toString())
-            const { _id, municipality, date, evaluations, m, h } = answer
+            const { _id, municipality, date } = answer
             const { type, number, indicator } = question
 
             const obj = {
@@ -175,45 +172,7 @@ export const getRating = async (req, res) => {
               }
             }
 
-            switch(type) {
-              case 'AVERAGE': {
-                const average = evaluations[0].reduce((sum, next) => sum += +next, 0) / evaluations[0].length
-                const result = average.toFixed(2)
-                return {
-                  ...obj,
-                  result
-                }
-              }
-
-              case 'SCORES': {
-                const sums = evaluations.map(value => value.reduce((sum, next) => sum += +next, 0))
-                const all = sums.reduce((sum, next) => sum += next, 0)
-                const result = (all / evaluations.length).toFixed(2)
-                return {
-                  ...obj,
-                  result
-                }
-              }
-
-              case 'CHECKBOXES': {
-                const sums = evaluations.map(value => value.reduce((sum, next) => sum += +next, 0))
-                const scores = sums.map(sum => sum === 3 ? (sum * 3) + 1 : sum * 3)
-                const result = scores.reduce((sum, next) => sum+= next, 0).toFixed(2)
-                return {
-                  ...obj,
-                  result
-                }
-              }
-
-              case 'PERCENTS':
-                return {
-                  ...obj,
-                  result: ((m / h) * 100).toFixed(2)
-                }
-
-              default:
-                return answer
-            }
+            return countAnswerResult(answer, type, obj)
           })
           .sort((a, b) => parseFloat(a.result) < parseFloat(b.result) ? 1 : -1)
           .map((answer, index) => {
@@ -282,7 +241,7 @@ export const getYears = async (req, res) => {
     const answers = await Answer.find()
 
     const years = [...new Set(answers.map(answer => getYear(answer.date)))]
-    const sorted = [...years].sort((a, b) => b - a)
+    const sorted = years.sort((a, b) => b - a)
 
     return res.json(sorted)
   } catch (e) {

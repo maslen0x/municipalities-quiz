@@ -7,6 +7,7 @@ import Filter from '../components/Filter'
 import { fetchRating } from '../actions/answers'
 
 import getYear from '../utils/getYear'
+import getQueryString from '../utils/getQueryString'
 
 const Rating = () => {
   const dispatch = useDispatch()
@@ -37,11 +38,7 @@ const Rating = () => {
   }, [dispatch, token])
 
   useEffect(() => {
-    const query = Object.keys(filters).reduce((query, next) => {
-      return query += filters[next] !== 'DEFAULT'
-        ? `${next}=${filters[next]}&`
-        : ''
-    }, '')
+    const query = getQueryString(filters)
     dispatch(fetchRating(token, query))
   }, [filters, dispatch, token])
 
@@ -65,7 +62,7 @@ const Rating = () => {
           </div>
         </div>
         <ul className="rating__list">
-          {(rating && !isLoading) ? (
+          {!isLoading ? (
             rating.length ? (
               [...rating].sort(sortByYear).map(group => (
                 <li key={group[0].date} className="rating__item">
