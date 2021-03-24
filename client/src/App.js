@@ -22,6 +22,7 @@ import { fetchYears } from './actions/answers'
 const App = () => {
   const dispatch = useDispatch()
 
+  const token = useSelector(({ user }) => user.token)
   const isReady = useSelector(({ user }) => user.isReady)
   const user = useSelector(({ user }) => user.currentUser)
   const years = useSelector(({ answers }) => answers.years)
@@ -31,10 +32,15 @@ const App = () => {
   useEffect(() => {
     const token = localStorage.getItem('token')
     dispatch(auth(token))
-    dispatch(fetchYears(token))
     dispatch(fetchMunicipalities())
     dispatch(fetchQuestions())
   }, [dispatch])
+
+  useEffect(() => {
+    if(!token)
+      return
+    dispatch(fetchYears(token))
+  }, [dispatch, token])
 
   const routes = [
     { path: '/', exact: true, component: Info },
@@ -45,18 +51,20 @@ const App = () => {
     { path: '/rating', component: Rating }
   ]
 
-  return (isReady && municipalities && questions && years) ? (
+  return (isReady && municipalities && questions) ? (
     user ? (
-      <div className="page">
-        <Sidebar />
-        <Header />
-        <main className="main">
-          <Switch>
-            {routes.map(route => <Route key={route.path} exact={route.exact} path={route.path} component={route.component} />)}
-            <Redirect to="/" />
-          </Switch>
-        </main>
-      </div>
+      years && (
+        <div className="page">
+          <Sidebar />
+          <Header />
+          <main className="main">
+            <Switch>
+              {routes.map(route => <Route key={route.path} exact={route.exact} path={route.path} component={route.component} />)}
+              <Redirect to="/" />
+            </Switch>
+          </main>
+        </div>
+      )
     ) : (
       <Switch>
         <Route exact path="/" component={Quiz} />

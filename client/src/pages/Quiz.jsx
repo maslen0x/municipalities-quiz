@@ -26,8 +26,8 @@ const Quiz = () => {
     const data = quiz.map(question => ({ ...question, municipality, date: Date.now() }))
     fetchQuiz(data)
 
-    // localStorage.removeItem('quiz')
-    // dispatch(setQuiz([]))
+    localStorage.removeItem('quiz')
+    dispatch(setQuiz([]))
   }
 
   const onSelect = e => {

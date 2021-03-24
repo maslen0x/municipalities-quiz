@@ -1,5 +1,7 @@
 import Question from '../models/Question.js'
 
+import errorHandler from '../utils/errorHandler.js'
+
 export const create = async (req, res) => {
   try {
     const { number, indicator, description, type, source, units, criteries, m, h } = req.body
@@ -18,7 +20,7 @@ export const create = async (req, res) => {
     res.json(question)
   } catch (e) {
     console.log(e)
-    return res.status(500).json({ message: 'Серверная ошибка' })
+    return errorHandler(res)
   }
 }
 
@@ -28,6 +30,6 @@ export const getAll = async (req, res) => {
     res.json(questions)
   } catch (e) {
     console.log(e)
-    return res.status(500).json({ message: 'Серверная ошибка' })
+    return errorHandler(res)
   }
 }

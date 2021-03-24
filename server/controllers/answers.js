@@ -7,6 +7,7 @@ import groupArrayByField from '../utils/groupArrayByField.js'
 import countAnswerResult from '../utils/countAnswerResult.js'
 import getMunicipalityName from '../utils/getMunicipalityName.js'
 import getYear from '../utils/getYear.js'
+import errorHandler from '../utils/errorHandler.js'
 
 export const sendQuiz = async (req, res) => {
   try {
@@ -23,7 +24,7 @@ export const sendQuiz = async (req, res) => {
     return res.json(answers)
   } catch (e) {
     console.log(e)
-    return res.status(500).json({ message: 'Серверная ошибка' })
+    return errorHandler(res)
   }
 }
 
@@ -31,7 +32,7 @@ export const getShortInfo = async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
     if(!user)
-      return res.status(403).json({ message: 'Недостаточно доступа для выполнения операции' })
+      return errorHandler(res, 403, 'Доступ ограничен')
 
     const { municipality, date, sort } = req.query
 
@@ -96,7 +97,7 @@ export const getShortInfo = async (req, res) => {
     return res.json(result)
   } catch (e) {
     console.log(e)
-    return res.status(500).json({ message: 'Серверная ошибка' })
+    return errorHandler(res)
   }
 }
 
@@ -104,7 +105,7 @@ export const getFullInfo = async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
     if(!user)
-      return res.status(403).json({ message: 'Недостаточно доступа для выполнения операции' })
+      return errorHandler(res, 403, 'Доступ ограничен')
 
     const { municipality } = req.params
     const answers = await Answer.find({ municipality })
@@ -120,7 +121,7 @@ export const getFullInfo = async (req, res) => {
     return res.json(latest)
   } catch (e) {
     console.log(e)
-    return res.status(500).json({ message: 'Серверная ошибка' })
+    return errorHandler(res)
   }
 }
 
@@ -128,7 +129,7 @@ export const getRating = async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
     if(!user)
-      return res.status(403).json({ message: 'Недостаточно доступа для выполнения операции' })
+      return errorHandler(res, 403, 'Доступ ограничен')
 
     const { municipality, date } = req.query
 
@@ -241,7 +242,7 @@ export const getRating = async (req, res) => {
     return res.json(filtered)
   } catch (e) {
     console.log(e)
-    return res.status(500).json({ message: 'Серверная ошибка' })
+    return errorHandler(res)
   }
 }
 
@@ -249,7 +250,7 @@ export const getYears = async (req, res) => {
   try {
     const user = await User.findById(req.user.id)
     if(!user)
-      return res.status(403).json({ message: 'Недостаточно доступа для выполнения операции' })
+      return errorHandler(res, 403, 'Доступ ограничен')
 
     const answers = await Answer.find()
 
@@ -259,6 +260,6 @@ export const getYears = async (req, res) => {
     return res.json(sorted)
   } catch (e) {
     console.log(e)
-    return res.status(500).json({ message: 'Серверная ошибка' })
+    return errorHandler(res)
   }
 }

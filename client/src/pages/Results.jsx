@@ -43,8 +43,6 @@ const Results = () => {
     dispatch(fetchShortAnswers(token, query))
   }, [filters, dispatch, token])
 
-  //TODO сделать редактирование ответов на странице с анкетов
-
   return (
     <div className="results">
       <div className="results__container container">

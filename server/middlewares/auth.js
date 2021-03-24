@@ -1,6 +1,8 @@
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv'
 
+import errorHandler from '../utils/errorHandler.js'
+
 dotenv.config()
 
 const JWT_KEY = process.env.JWT_KEY
@@ -10,7 +12,7 @@ const auth = (req, res, next) => {
     const token = req.headers.authorization.split(' ')[1]
 
     if(!token)
-      return res.status(401).json({ message: 'Не удалось авторизоваться'})
+      return errorHandler(res, 401, 'Не удалось авторизоваться')
 
     const decoded = jwt.verify(token, JWT_KEY)
     req.user = decoded
@@ -18,7 +20,7 @@ const auth = (req, res, next) => {
     next()
   } catch (e) {
     console.log(e)
-    return res.status(500).json({ message: 'Серверная ошибка'})
+    return errorHandler(res)
   }
 }
 

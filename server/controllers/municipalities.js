@@ -1,5 +1,7 @@
 import Municipality from '../models/Municipality.js'
 
+import errorHandler from '../utils/errorHandler.js'
+
 export const create = async (req, res) => {
   try {
     const municipalities = req.body
@@ -7,7 +9,7 @@ export const create = async (req, res) => {
     return res.json(municipalities)
   } catch (e) {
     console.log(e)
-    return res.status(500).json({ message: 'Серверная ошибка' })
+    return errorHandler(res)
   }
 }
 
@@ -17,6 +19,6 @@ export const getAll = async (req, res) => {
     return res.json(municipalities)
   } catch (e) {
     console.log(e)
-    return res.status(500).json({ message: 'Серверная ошибка' })
+    return errorHandler(res)
   }
 }
