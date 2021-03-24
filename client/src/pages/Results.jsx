@@ -41,7 +41,7 @@ const Results = () => {
   useEffect(() => {
     const query = getQueryString(filters)
     dispatch(fetchShortAnswers(token, query))
-  }, [filters])
+  }, [filters, dispatch, token])
 
   //TODO сделать редактирование ответов на странице с анкетов
 

@@ -23,11 +23,6 @@ const Rating = () => {
   const years = useSelector(({ answers }) => answers.years)
   const isLoading = useSelector(({ answers }) => answers.isLoading)
 
-  const sortByParam = (prev, next) => prev < next ? 1 : -1
-
-  const sortByYear = (a, b) => sortByParam(getYear(a[0].date), getYear(b[0].date))
-  const sortByResult = (a, b) => sortByParam(a.result, b.result)
-
   const onFilterChange = e => {
     const { name, value } = e.target
     setFilters({ ...filters, [name]: value })
@@ -64,13 +59,13 @@ const Rating = () => {
         <ul className="rating__list">
           {!isLoading ? (
             rating.length ? (
-              [...rating].sort(sortByYear).map(group => (
+              rating.map(group => (
                 <li key={group[0].date} className="rating__item">
                   <p className="rating__year title">
                     {getYear(group[0].date)}
                   </p>
-                  {[...group].sort(sortByResult).map((quiz, index) => (
-                    <RatingCard key={quiz.municipality} place={index + 1} {...quiz} />
+                  {group.map((quiz, index) => (
+                    <RatingCard key={quiz.municipality} {...quiz} />
                   ))}
                 </li>
               ))

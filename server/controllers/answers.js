@@ -132,15 +132,7 @@ export const getRating = async (req, res) => {
 
     const { municipality, date } = req.query
 
-    const filters = {
-      municipality,
-      date
-    }
-
-    if(filters.date)
-      filters.date = { $gt: new Date(date), $lt: new Date((+date + 1).toString()) }
-
-    const query = Object.keys(filters).reduce((obj, key) => filters[key] ? { ...obj, [key]: filters[key] } : obj, {})
+    const query = date ? { date: { $gt: new Date(date), $lt: new Date((+date + 1).toString()) } } : {}
 
     const answers = await Answer.find(query)
     const questions = await Question.find()
@@ -159,7 +151,7 @@ export const getRating = async (req, res) => {
           .map(answer => {
             const question = questions.find(question => question._id.toString() === answer.question.toString())
             const { _id, municipality, date } = answer
-            const { type, number, indicator } = question
+            const { type, number, indicator, reverse } = question
 
             const obj = {
               _id,
@@ -172,7 +164,7 @@ export const getRating = async (req, res) => {
               }
             }
 
-            return countAnswerResult(answer, type, obj)
+            return countAnswerResult(answer, type, reverse, obj)
           })
           .sort((a, b) => parseFloat(a.result) < parseFloat(b.result) ? 1 : -1)
           .map((answer, index) => {
@@ -225,7 +217,28 @@ export const getRating = async (req, res) => {
       }
     }))
 
-    return res.json(grouped)
+    const sortByParam = (prev, next) => prev < next ? 1 : -1
+
+    const sortByYear = (a, b) => sortByParam(getYear(a[0].date), getYear(b[0].date))
+    const sortByResult = (a, b) => sortByParam(a.result, b.result)
+
+    const sorted = grouped
+      .sort(sortByYear)
+      .map(group => {
+        return group
+          .sort(sortByResult)
+          .map((quiz, index) => ({ ...quiz, place: index + 1}))
+      })
+
+    const filtered = sorted.map(group => {
+      return group.filter(quiz => {
+        return municipality
+          ? quiz.municipality.toString() === municipality.toString()
+          : quiz
+      })
+    }).filter(group => group.length)
+
+    return res.json(filtered)
   } catch (e) {
     console.log(e)
     return res.status(500).json({ message: 'Серверная ошибка' })

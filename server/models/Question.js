@@ -9,6 +9,7 @@ const questionSchema = new Schema({
   type: { type: String },
   source: { type: String },
   units: { type: String },
+  reverse: { type: Boolean },
   criteries: [{ type: String }],
   m: { type: String },
   h: { type: String }
