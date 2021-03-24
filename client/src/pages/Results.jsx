@@ -8,6 +8,7 @@ import Filter from '../components/Filter'
 import { fetchShortAnswers } from '../actions/answers'
 
 import getMunicipalityName from '../utils/getMunicipalityName'
+import getYear from '../utils/getYear'
 
 const Results = () => {
   const dispatch = useDispatch()
@@ -17,19 +18,19 @@ const Results = () => {
     { value: 'date', label: 'По дате' }
   ]
 
-  const token = useSelector(({ user }) => user.token)
-  const answers = useSelector(({ answers }) => answers.short)
-  const municipalities = useSelector(({ municipalities }) => municipalities)
-
-  const [years, setYears] = useState(null)
-  const [sortedAnswers, setSortedAnswers] = useState(answers)
-  const [filteredAnswers, setFilteredAnswers] = useState(sortedAnswers)
+  const [sortedAnswers, setSortedAnswers] = useState(null)
+  const [filteredAnswers, setFilteredAnswers] = useState(null)
 
   const [sort, setSort] = useState('DEFAULT')
   const [filters, setFilters] = useState({
     municipality: 'DEFAULT',
     year: 'DEFAULT'
   })
+
+  const token = useSelector(({ user }) => user.token)
+  const answers = useSelector(({ answers }) => answers.short)
+  const years = useSelector(({ answers }) => answers.years)
+  const municipalities = useSelector(({ municipalities }) => municipalities)
 
   const onSortChange = e => {
     const { value } = e.target
@@ -71,26 +72,18 @@ const Results = () => {
   useEffect(() => {
     const newAnswers = sortedAnswers && sortedAnswers.filter(quiz => {
       if(filters.municipality === 'DEFAULT' && filters.year !== 'DEFAULT')
-        return filters.year === new Date(quiz.date).getFullYear().toString() && quiz
+        return filters.year === getYear(quiz.date).toString() && quiz
 
       if(filters.municipality !== 'DEFAULT' && filters.year === 'DEFAULT')
         return filters.municipality === quiz.municipality && quiz
 
       if(filters.municipality !== 'DEFAULT' && filters.year !== 'DEFAULT')
-        return filters.municipality === quiz.municipality && filters.year === new Date(quiz.date).getFullYear().toString() && quiz
+        return filters.municipality === quiz.municipality && filters.year === getYear(quiz.date).toString() && quiz
 
       return quiz
     })
     setFilteredAnswers(newAnswers)
   }, [sortedAnswers, filters])
-
-  useEffect(() => {
-    if(!answers)
-      return
-    const yearsArr = answers.map(answer => new Date(answer.date).getFullYear())
-    const filteredYears = [...new Set(yearsArr.reverse())]
-    setYears(filteredYears)
-  }, [answers])
 
   //TODO сделать редактирование ответов на странице с анкетов
   //TODO педелать говнокод с фильтрами (мб сделать фильтрацию/сортировку на бэкенде)
@@ -105,7 +98,7 @@ const Results = () => {
             caption="Сортировка"
             className="results__sort"
           />
-          <div className="results__filters">
+          <div className="results__filters filters">
             <ul className="filters__list">
               <Filter onChange={onFilterChange} caption="МО" name="municipality">
                 {municipalities.map(municipality => (
@@ -113,7 +106,7 @@ const Results = () => {
                 ))}
               </Filter>
               <Filter onChange={onFilterChange} caption="Год" name="year">
-                {years && years.map(year => (
+                {years.map(year => (
                   <option key={year} value={year}>{year}</option>
                 ))}
               </Filter>
@@ -125,7 +118,7 @@ const Results = () => {
             {filteredAnswers.length ? (
               filteredAnswers.map(quiz => (
                 <li key={`${quiz.municipality}${quiz.date}`} className="results__item">
-                  <ResultsCard quiz={quiz} />
+                  <ResultsCard {...quiz} />
                 </li>
               ))
             ) : 'Список отчетов пуст'}

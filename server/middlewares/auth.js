@@ -18,7 +18,7 @@ const auth = (req, res, next) => {
     next()
   } catch (e) {
     console.log(e)
-    return res.status(500).json({ message: 'Что-то пошло не так'})
+    return res.status(500).json({ message: 'Серверная ошибка'})
   }
 }
 

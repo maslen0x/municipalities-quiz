@@ -3,6 +3,7 @@ import Question from '../models/Question.js'
 import User from '../models/User.js'
 
 import groupArrayByField from '../utils/groupArrayByField.js'
+import getYear from '../utils/getYear.js'
 
 export const sendQuiz = async (req, res) => {
   try {
@@ -133,7 +134,18 @@ export const getFullInfo = async (req, res) => {
 
 export const getRating = async (req, res) => {
   try {
-    const answers = await Answer.find()
+    const user = await User.findById(req.user.id)
+    if(!user)
+      return res.status(403).json({ message: 'Недостаточно доступа для выполнения операции' })
+
+    const { date } = req.query
+
+    const filters = { ...req.query }
+
+    if(filters.hasOwnProperty('date'))
+      filters.date = { $gt: new Date(date), $lt: new Date((+date + 1).toString()) }
+
+    const answers = await Answer.find(filters)
     const questions = await Question.find()
 
     const groupedByYear = Object.values(answers.reduce((acc, el) => {
@@ -255,6 +267,24 @@ export const getRating = async (req, res) => {
     }))
 
     return res.json(grouped)
+  } catch (e) {
+    console.log(e)
+    return res.status(500).json({ message: 'Серверная ошибка' })
+  }
+}
+
+export const getYears = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+    if(!user)
+      return res.status(403).json({ message: 'Недостаточно доступа для выполнения операции' })
+
+    const answers = await Answer.find()
+
+    const years = [...new Set(answers.map(answer => getYear(answer.date)))]
+    const sorted = [...years].sort((a, b) => b - a)
+
+    return res.json(sorted)
   } catch (e) {
     console.log(e)
     return res.status(500).json({ message: 'Серверная ошибка' })

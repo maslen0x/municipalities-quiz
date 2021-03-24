@@ -17,18 +17,21 @@ import Sidebar from './components/Sidebar'
 import { auth } from './actions/user'
 import { fetchMunicipalities } from './actions/municipalities'
 import { fetchQuestions } from './actions/questions'
+import { fetchYears } from './actions/answers'
 
 const App = () => {
   const dispatch = useDispatch()
 
   const isReady = useSelector(({ user }) => user.isReady)
   const user = useSelector(({ user }) => user.currentUser)
+  const years = useSelector(({ answers }) => answers.years)
   const municipalities = useSelector(({ municipalities }) => municipalities)
   const questions = useSelector(({ questions }) => questions)
 
   useEffect(() => {
     const token = localStorage.getItem('token')
     dispatch(auth(token))
+    dispatch(fetchYears(token))
     dispatch(fetchMunicipalities())
     dispatch(fetchQuestions())
   }, [dispatch])
@@ -42,7 +45,7 @@ const App = () => {
     { path: '/rating', component: Rating }
   ]
 
-  return isReady && municipalities && questions ? (
+  return (isReady && municipalities && questions && years) ? (
     user ? (
       <div className="page">
         <Sidebar />

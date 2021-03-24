@@ -6,8 +6,7 @@ import Filter from '../components/Filter'
 
 import { fetchShortAnswers } from '../actions/answers'
 
-// import getMunicipalityName from '../utils/getMunicipalityName'
-// import countScores from '../utils/countScores'
+import getYear from '../utils/getYear'
 
 const Graphics = () => {
   const dispatch = useDispatch()
@@ -39,7 +38,7 @@ const Graphics = () => {
   useEffect(() => {
     if(!answers)
       return
-    const yearsArr = answers.map(answer => new Date(answer.date).getFullYear())
+    const yearsArr = answers.map(answer => getYear(answer.date))
     const filteredYears = [...new Set(yearsArr.reverse())]
     setYears(filteredYears)
   }, [answers])

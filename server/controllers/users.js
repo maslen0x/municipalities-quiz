@@ -46,7 +46,7 @@ export const register = async (req, res) => {
     })
   } catch (e) {
     console.log(e)
-    return res.status(500).json({ message: 'Что-то пошло не так' })
+    return res.status(500).json({ message: 'Серверная ошибка' })
   }
 }
 
@@ -76,7 +76,7 @@ export const login = async (req, res) => {
     })
   } catch (e) {
     console.log(e)
-    return res.status(500).json({ message: 'Что-то пошло не так' })
+    return res.status(500).json({ message: 'Серверная ошибка' })
   }
 }
 
@@ -96,6 +96,6 @@ export const auth = async (req, res) => {
     })
   } catch (e) {
     console.log(e)
-    return res.status(500).json({ message: 'Что-то пошло не так' })
+    return res.status(500).json({ message: 'Серверная ошибка' })
   }
 }
