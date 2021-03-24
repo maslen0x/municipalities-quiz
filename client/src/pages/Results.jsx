@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import ShortCard from '../components/ShortCard'
-import Filters from '../components/Filters'
+import ResultsCard from '../components/ResultsCard'
+import Sort from '../components/Sort'
+import Filter from '../components/Filter'
 
 import { fetchShortAnswers } from '../actions/answers'
 
@@ -11,23 +12,34 @@ import getMunicipalityName from '../utils/getMunicipalityName'
 const Results = () => {
   const dispatch = useDispatch()
 
+  const sortOptions = [
+    { value: 'alphabet', label: 'По алфавиту' },
+    { value: 'date', label: 'По дате' }
+  ]
+
   const token = useSelector(({ user }) => user.token)
   const answers = useSelector(({ answers }) => answers.short)
   const municipalities = useSelector(({ municipalities }) => municipalities)
 
+  const [years, setYears] = useState(null)
   const [sortedAnswers, setSortedAnswers] = useState(answers)
+  const [filteredAnswers, setFilteredAnswers] = useState(sortedAnswers)
+
+  const [sort, setSort] = useState('DEFAULT')
   const [filters, setFilters] = useState({
-    sort: 'DEFAULT',
     municipality: 'DEFAULT',
     year: 'DEFAULT'
   })
 
-  const onSelectChange = e => {
+  const onSortChange = e => {
+    const { value } = e.target
+    setSort(value)
+  }
+
+  const onFilterChange = e => {
     const { name, value } = e.target
     setFilters({ ...filters, [name]: value })
   }
-
-  const countRating = arr => arr.reduce((sum, next) => sum += +next.result, 0).toFixed(2)
 
   useEffect(() => {
     dispatch(fetchShortAnswers(token))
@@ -39,37 +51,46 @@ const Results = () => {
       switch(sort) {
         case 'alphabet': {
           const newAnswers = answers.sort((a, b) => {
-            if(getMunicipalityName(municipalities, a.municipality) > getMunicipalityName(municipalities, b.municipality))
-              return 1
-            if(getMunicipalityName(municipalities, a.municipality) < getMunicipalityName(municipalities, b.municipality))
-              return -1
-            return 0
+            return getMunicipalityName(municipalities, a.municipality) > getMunicipalityName(municipalities, b.municipality) ? 1 : -1
           })
           return newAnswers
         }
-  
+
         case 'date': {
-          const newAnswers = answers.sort((a, b) => (a.date > b.date && -1) || (a.date < b.date && 1) || 0)
+          const newAnswers = answers.sort((a, b) => a.date < b.date ? 1 : -1)
           return newAnswers
         }
-  
-        case 'rating': {
-          const newAnswers = answers.sort((a, b) => {
-            if(countRating(a.answers) > countRating(b.answers))
-              return -1
-            if(countRating(a.answers) < countRating(b.answers))
-              return 1
-            return 0
-          })
-          return newAnswers
-        }
-  
+
         default:
           return answers
       }
     }
-    setSortedAnswers(getSort(filters.sort, copy))
-  }, [filters, answers, municipalities])
+    setSortedAnswers(getSort(sort, copy))
+  }, [sort, answers, municipalities])
+
+  useEffect(() => {
+    const newAnswers = sortedAnswers && sortedAnswers.filter(quiz => {
+      if(filters.municipality === 'DEFAULT' && filters.year !== 'DEFAULT')
+        return filters.year === new Date(quiz.date).getFullYear().toString() && quiz
+
+      if(filters.municipality !== 'DEFAULT' && filters.year === 'DEFAULT')
+        return filters.municipality === quiz.municipality && quiz
+
+      if(filters.municipality !== 'DEFAULT' && filters.year !== 'DEFAULT')
+        return filters.municipality === quiz.municipality && filters.year === new Date(quiz.date).getFullYear().toString() && quiz
+
+      return quiz
+    })
+    setFilteredAnswers(newAnswers)
+  }, [sortedAnswers, filters])
+
+  useEffect(() => {
+    if(!answers)
+      return
+    const yearsArr = answers.map(answer => new Date(answer.date).getFullYear())
+    const filteredYears = [...new Set(yearsArr.reverse())]
+    setYears(filteredYears)
+  }, [answers])
 
   //TODO сделать редактирование ответов на странице с анкетов
   //TODO педелать говнокод с фильтрами (мб сделать фильтрацию/сортировку на бэкенде)
@@ -77,39 +98,38 @@ const Results = () => {
   return (
     <div className="results">
       <div className="results__container container">
-        <Filters onSelectChange={onSelectChange} className="results__filters" />
-        {sortedAnswers ? (
-          <div className="short">
-            <ul className="short__list">
-              {sortedAnswers.length ? (
-                sortedAnswers.map(quiz =>
-                  filters.municipality === 'DEFAULT' && filters.year !== 'DEFAULT' ? (
-                    filters.year === new Date(quiz.date).getFullYear().toString() && (
-                      <li key={`${quiz.municipality}${quiz.date}`} className="short__item">
-                        <ShortCard quiz={quiz} />
-                      </li>
-                    )
-                  ) : filters.municipality !== 'DEFAULT' && filters.year === 'DEFAULT' ? (
-                    filters.municipality === quiz.municipality && (
-                      <li key={`${quiz.municipality}${quiz.date}`} className="short__item">
-                        <ShortCard quiz={quiz} />
-                      </li>
-                    )
-                  ) : filters.municipality !== 'DEFAULT' && filters.year !== 'DEFAULT' ? (
-                    filters.municipality === quiz.municipality && filters.year === new Date(quiz.date).getFullYear().toString() && (
-                      <li key={`${quiz.municipality}${quiz.date}`} className="short__item">
-                        <ShortCard quiz={quiz} />
-                      </li>
-                    )
-                  ) : (
-                    <li key={`${quiz.municipality}${quiz.date}`} className="short__item">
-                      <ShortCard quiz={quiz} />
-                    </li>
-                  )
-                )
-              ) : 'Список отчетов пуст'}
+        <div className="results__header">
+          <Sort
+            onChange={onSortChange}
+            options={sortOptions}
+            caption="Сортировка"
+            className="results__sort"
+          />
+          <div className="results__filters">
+            <ul className="filters__list">
+              <Filter onChange={onFilterChange} caption="МО" name="municipality">
+                {municipalities.map(municipality => (
+                  <option key={municipality._id} value={municipality._id}>{municipality.name}</option>
+                ))}
+              </Filter>
+              <Filter onChange={onFilterChange} caption="Год" name="year">
+                {years && years.map(year => (
+                  <option key={year} value={year}>{year}</option>
+                ))}
+              </Filter>
             </ul>
           </div>
+        </div>
+        {filteredAnswers ? (
+          <ul className="results__list">
+            {filteredAnswers.length ? (
+              filteredAnswers.map(quiz => (
+                <li key={`${quiz.municipality}${quiz.date}`} className="results__item">
+                  <ResultsCard quiz={quiz} />
+                </li>
+              ))
+            ) : 'Список отчетов пуст'}
+          </ul>
         ) : 'Загрузка...'}
       </div>
     </div>

@@ -23,7 +23,7 @@ const Auth = () => {
 
   return (
     <section className="auth">
-      <form onSubmit={onLogin} className="auth__form">
+      <form onSubmit={onLogin} className="auth__form card">
         <h2 className="auth__title title">Авторизация</h2>
         <input
           onChange={onInputChange}

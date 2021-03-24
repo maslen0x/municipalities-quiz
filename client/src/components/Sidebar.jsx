@@ -9,7 +9,9 @@ const Sidebar = () => {
   const links = [
     { href: '/', label: 'Информация' },
     { href: '/indicators', label: 'Показатели' },
-    { href: '/results', label: 'Результаты' }
+    { href: '/results', label: 'Результаты' },
+    { href: '/graphics', label: 'Графики' },
+    { href: '/rating', label: 'Рейтинг' }
   ]
 
   const checkActiveLink = href => activeLink === href ? 'active' : ''

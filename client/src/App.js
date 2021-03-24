@@ -8,6 +8,8 @@ import Info from './pages/Info'
 import Indicators from './pages/Indicators'
 import Results from './pages/Results'
 import Report from './pages/Report'
+import Graphics from './pages/Graphics'
+import Rating from './pages/Rating'
 
 import Header from './components/Header'
 import Sidebar from './components/Sidebar'
@@ -35,7 +37,9 @@ const App = () => {
     { path: '/', exact: true, component: Info },
     { path: '/indicators', component: Indicators },
     { path: '/results/:id', component: Report },
-    { path: '/results', component: Results }
+    { path: '/results', component: Results },
+    { path: '/graphics', component: Graphics },
+    { path: '/rating', component: Rating }
   ]
 
   return isReady && municipalities && questions ? (

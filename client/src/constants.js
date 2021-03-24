@@ -23,3 +23,5 @@ export const REMOVE_ANSWER = 'REMOVE_ANSWER'
 
 export const SET_SHORT_ANSWERS = 'SET_SHORT_ANSWERS'
 export const SET_FULL_ANSWERS = 'SET_FULL_ANSWERS'
+
+export const SET_RATING = 'SET_RATING'

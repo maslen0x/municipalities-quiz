@@ -1,6 +1,6 @@
 import { Router } from 'express'
 
-import { sendQuiz, getShortInfo, getFullInfo } from '../controllers/answers.js'
+import { sendQuiz, getShortInfo, getFullInfo, getRating } from '../controllers/answers.js'
 import auth from '../middlewares/auth.js'
 
 const router = Router()
@@ -8,6 +8,7 @@ const router = Router()
 router.post('/', sendQuiz)
 router.get('/short', auth, getShortInfo)
 router.get('/full/:municipality', auth, getFullInfo)
+router.get('/rating', auth, getRating)
 
 import Answer from '../models/Answer.js'
 router.patch('/', async (req, res) => {
