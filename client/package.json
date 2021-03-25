@@ -1,7 +1,8 @@
 {
   "name": "client",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
+  "author": "Sergei <shid1095@gmail.com> Venukov",
   "dependencies": {
     "axios": "^0.21.1",
     "chart.js": "^2.9.4",

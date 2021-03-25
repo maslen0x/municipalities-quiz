@@ -4,6 +4,8 @@
   "main": "index.js",
   "license": "MIT",
   "type": "module",
+  "private": true,
+  "author": "Sergei <shid1095@gmail.com> Venukov",
   "scripts": {
     "start": "node index.js",
     "server": "nodemon index.js"

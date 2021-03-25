@@ -1,7 +1,7 @@
 const countAnswerResult = (answer, type, reverse, obj) => {
   const { evaluations, m, h } = answer
 
-  const getResult = () => {
+  const getResult = (evaluations, m, h) => {
     switch(type) {
       case 'AVERAGE': {
         const average = evaluations[0].reduce((sum, next) => sum += +next, 0) / evaluations[0].length
@@ -28,12 +28,16 @@ const countAnswerResult = (answer, type, reverse, obj) => {
         return result
   
       default:
-        return answer
+        return null
     }
   }
 
-  const result = reverse ? 1 / getResult() : getResult()
-  return { ...obj, result }
+  const result = getResult(evaluations, m, h)
+
+  return {
+    ...obj,
+    result: reverse ? (1 / result).toFixed(2) : result
+  }
 }
 
 export default countAnswerResult
