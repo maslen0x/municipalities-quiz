@@ -8,8 +8,9 @@ const Sidebar = () => {
 
   const links = [
     { href: '/', label: 'Информация' },
-    { href: '/indicators', label: 'Показатели' },
+    { href: '/table-of-indicators', label: 'Таблица показателей' },
     { href: '/results', label: 'Результаты' },
+    { href: '/indicators', label: 'Показатели' },
     { href: '/rating', label: 'Рейтинг' },
     { href: '/graphics', label: 'Графики' }
   ]

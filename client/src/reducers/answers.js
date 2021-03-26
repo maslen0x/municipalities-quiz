@@ -1,11 +1,9 @@
-import { SET_SHORT_ANSWERS, SET_FULL_ANSWERS, SET_RATING, SET_ANSWERS_YEARS, SET_ANSWERS_LOADING } from '../constants'
+import { SET_SHORT_ANSWERS, SET_FULL_ANSWERS, SET_RATING } from '../constants'
 
 const initialState = {
   short: [],
   full: null,
-  rating: [],
-  years: null,
-  isLoading: false
+  rating: []
 }
 
 const answers = (state = initialState, action) => {
@@ -28,18 +26,6 @@ const answers = (state = initialState, action) => {
       return {
         ...state,
         rating: payload
-      }
-
-    case SET_ANSWERS_YEARS:
-      return {
-        ...state,
-        years: payload
-      }
-
-    case SET_ANSWERS_LOADING:
-      return {
-        ...state,
-        isLoading: payload
       }
 
     default:

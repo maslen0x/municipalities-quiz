@@ -18,15 +18,15 @@ const Results = () => {
   ]
 
   const [filters, setFilters] = useState({
+    sort: 'DEFAULT',
     municipality: 'DEFAULT',
-    date: 'DEFAULT',
-    sort: 'DEFAULT'
+    date: 'DEFAULT'
   })
 
   const token = useSelector(({ user }) => user.token)
   const answers = useSelector(({ answers }) => answers.short)
-  const years = useSelector(({ answers }) => answers.years)
-  const isLoading = useSelector(({ answers }) => answers.isLoading)
+  const years = useSelector(({ years }) => years)
+  const isLoading = useSelector(({ isLoading }) => isLoading)
   const municipalities = useSelector(({ municipalities }) => municipalities)
 
   const onFilterChange = e => {

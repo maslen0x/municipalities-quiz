@@ -20,8 +20,8 @@ const Rating = () => {
   const token = useSelector(({ user }) => user.token)
   const municipalities = useSelector(({ municipalities }) => municipalities)
   const rating = useSelector(({ answers }) => answers.rating)
-  const years = useSelector(({ answers }) => answers.years)
-  const isLoading = useSelector(({ answers }) => answers.isLoading)
+  const years = useSelector(({ years }) => years)
+  const isLoading = useSelector(({ isLoading }) => isLoading)
 
   const onFilterChange = e => {
     const { name, value } = e.target
@@ -64,7 +64,7 @@ const Rating = () => {
                   <p className="rating__year title">
                     {getYear(group[0].date)}
                   </p>
-                  {group.map((quiz, index) => (
+                  {group.map(quiz => (
                     <RatingCard key={quiz.municipality} {...quiz} />
                   ))}
                 </li>

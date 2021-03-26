@@ -18,11 +18,11 @@ const Answer = ({ question, evaluations, m, h }) => {
         <ul className="answer-card__list">
           {evaluations[0].map((value, index) => (
             <li key={getRandom()} className="answer-card__item">
-              {getAnswerer(question.source)} {index + 1}: {value} ({question.units})
+              {getAnswerer(question.source)} {index + 1}: {value}
             </li>
           ))}
         </ul>
-        <p className="question__result">Результат: {countResult(question.type, evaluations[0])} ({question.units})</p>
+        <p className="question__result">Результат: {countResult(question.type, evaluations[0])} {question.units}</p>
       </>}
 
       {question.type === SCORES && <>

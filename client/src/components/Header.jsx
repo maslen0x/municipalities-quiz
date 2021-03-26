@@ -10,7 +10,7 @@ const Header = () => {
 
   return (
     <header className="header">
-      <p>Система оценки инвестиционного климата в муниципальных образованиях Оренбургской области</p>
+      <p className="header__text">Система оценки инвестиционного климата в муниципальных образованиях Оренбургской области</p>
       <button onClick={onLogOut} className="header__logout btn">Выйти</button>
     </header>
   )

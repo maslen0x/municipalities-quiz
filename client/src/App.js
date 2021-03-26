@@ -5,11 +5,12 @@ import { Switch, Route, Redirect } from 'react-router-dom'
 import Quiz from './pages/Quiz'
 import Auth from './pages/Auth'
 import Info from './pages/Info'
-import Indicators from './pages/Indicators'
+import TableOfIndicators from './pages/TableOfIndicators'
 import Results from './pages/Results'
 import Report from './pages/Report'
-import Graphics from './pages/Graphics'
+import indicators from './pages/indicators'
 import Rating from './pages/Rating'
+import Graphics from './pages/Graphics'
 
 import Header from './components/Header'
 import Sidebar from './components/Sidebar'
@@ -17,7 +18,7 @@ import Sidebar from './components/Sidebar'
 import { auth } from './actions/user'
 import { fetchMunicipalities } from './actions/municipalities'
 import { fetchQuestions } from './actions/questions'
-import { fetchYears } from './actions/answers'
+import { fetchYears } from './actions/years'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -25,7 +26,7 @@ const App = () => {
   const token = useSelector(({ user }) => user.token)
   const isReady = useSelector(({ user }) => user.isReady)
   const user = useSelector(({ user }) => user.currentUser)
-  const years = useSelector(({ answers }) => answers.years)
+  const years = useSelector(({ years }) => years)
   const municipalities = useSelector(({ municipalities }) => municipalities)
   const questions = useSelector(({ questions }) => questions)
 
@@ -44,11 +45,12 @@ const App = () => {
 
   const routes = [
     { path: '/', exact: true, component: Info },
-    { path: '/indicators', component: Indicators },
+    { path: '/table-of-indicators', component: TableOfIndicators },
     { path: '/results/:id', component: Report },
     { path: '/results', component: Results },
-    { path: '/graphics', component: Graphics },
-    { path: '/rating', component: Rating }
+    { path: '/indicators', component: indicators },
+    { path: '/rating', component: Rating },
+    { path: '/graphics', component: Graphics }
   ]
 
   return (isReady && municipalities && questions) ? (

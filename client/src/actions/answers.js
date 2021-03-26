@@ -1,5 +1,8 @@
 import axios from 'axios'
-import { SET_SHORT_ANSWERS, SET_FULL_ANSWERS, SET_RATING, SET_ANSWERS_YEARS, SET_ANSWERS_LOADING } from '../constants'
+
+import { setLoading } from '../actions/isLoading'
+
+import { SET_SHORT_ANSWERS, SET_FULL_ANSWERS, SET_RATING } from '../constants'
 
 const setShortAnswers = payload => ({
   type: SET_SHORT_ANSWERS,
@@ -13,16 +16,6 @@ export const setFullAnswers = payload => ({
 
 const setRating = payload => ({
   type: SET_RATING,
-  payload
-})
-
-const setYears = payload => ({
-  type: SET_ANSWERS_YEARS,
-  payload
-})
-
-const setLoading = payload => ({
-  type: SET_ANSWERS_LOADING,
   payload
 })
 
@@ -55,13 +48,5 @@ export const fetchRating = (token, query = '') => dispatch => {
       dispatch(setRating(data))
       dispatch(setLoading(false))
     })
-    .catch(e => alert(e.response.data.message))
-}
-
-export const fetchYears = token => dispatch => {
-  axios.get('/api/answers/years', {
-    headers: { Authorization: token }
-  })
-    .then(({ data }) => dispatch(setYears(data)))
     .catch(e => alert(e.response.data.message))
 }

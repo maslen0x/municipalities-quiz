@@ -60,7 +60,7 @@ export const getShortInfo = async (req, res) => {
       return quiz.map(answer => {
         const question = questions.find(question => question._id.toString() === answer.question.toString())
         const { _id } = answer
-        const { type, number, indicator, reverse } = question
+        const { type, number, indicator } = question
 
         const obj = {
           _id,
@@ -110,11 +110,7 @@ export const getFullInfo = async (req, res) => {
     const { municipality } = req.params
     const answers = await Answer.find({ municipality })
 
-    const groupedByDate = Object.values(answers.reduce((acc, el) => {
-      const date = el.date
-      acc[date] = [...(acc[date] || []), el]
-      return acc
-    }, {}))
+    const groupedByDate = groupArrayByField(answers, 'date')
 
     const latest = groupedByDate[groupedByDate.length - 1]
 
