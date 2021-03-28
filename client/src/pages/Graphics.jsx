@@ -27,10 +27,6 @@ const Graphics = () => {
   }
 
   useEffect(() => {
-    console.log(filters);
-  }, [filters])
-
-  useEffect(() => {
     dispatch(fetchShortAnswers(token))
   }, [dispatch, token])
 

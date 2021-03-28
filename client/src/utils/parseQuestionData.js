@@ -1,4 +1,4 @@
-import { RESPONDENTS, EXPERTS, FACTS, AVERAGE, CHECKBOXES } from '../constants'
+import { AVERAGE, SCORES, CHECKBOXES, PERCENTS, RESPONDENTS, EXPERTS, FACTS } from '../constants'
 
 export const getSource = source => {
   switch(source) {
@@ -26,6 +26,25 @@ export const getUnits = source => {
 
     case FACTS:
       return 'процентов'
+
+    default:
+      return null
+  }
+}
+
+export const getType = type => {
+  switch(type) {
+    case AVERAGE:
+      return 'среднее значение'
+
+    case SCORES:
+      return 'баллы'
+
+    case CHECKBOXES:
+      return 'чекбосы'
+
+    case PERCENTS:
+      return 'проценты'
 
     default:
       return null
@@ -88,20 +107,20 @@ export const getRatingScale = question => {
     return question.criteries[0]
 
   if(question.source === RESPONDENTS) {
-    return <>
+    return (
       <ul>
         <li>n — количество респондентов, принявших участие в опросе</li>
         <li>q — оценка одним респондентом по каждому из критериев</li>
       </ul>
-    </>
+    )
   }
 
   if(question.source === EXPERTS) {
-    return <>
+    return (
       <ul>
         <li>n — количество членов экспертной группы</li>
         <li>q — оценка одним членом экспертной группы по каждому из критериев</li>
       </ul>
-    </>
+    )
   }
 }

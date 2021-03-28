@@ -1,7 +1,6 @@
 question {
   number: string (А1.1, Б2.1)
   indicator: string required unique (example оценка эффективности процедур по подключению к сетям электроснабжения (мощность линии от 15 до 150 кВт))
-  description: string (example изменение общего количества земельных участков, сформированных и выставленных на аукцион в отчетном году, по сравнению с предыдущим годом)
   type: string required (AVERAGE | SCORES | CHECKBOXES | PERCENTS)
   source: string (RESPONDENTS | EXPERTS | FACTS)
 
@@ -9,6 +8,7 @@ question {
 
   units: string (for AVERAGE) (единицы измерения)
 
+  description: string (example изменение общего количества земельных участков, сформированных и выставленных на аукцион в отчетном году, по сравнению с предыдущим годом)
   criteries: [string] (for AVERAGE & SCORES & CHECKBOXES)
   (example for AVERAGE ['(t)i – время подключения к электросетям для респондента i'])
 

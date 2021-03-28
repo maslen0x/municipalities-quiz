@@ -1,0 +1,33 @@
+.edit
+  &__form
+    & > *
+      &:not(:last-child)
+        margin-bottom: 5px
+  &__label
+    display: block
+  &__input
+    width: 100%
+  &__textarea
+    min-width: 100%
+    max-width: 100%
+    min-height: 80px
+  &__criteries
+    &-title,
+    &-list
+      margin-bottom: 5px
+    &-item
+      display: flex
+      &:not(:last-child)
+        margin-bottom: 5px
+    &-remove
+      width: 20px
+      height: 20px
+      background: #7dadd3 url(../../img/cross.svg) 50% / 10px no-repeat
+      margin: 1px 5px 0 0
+    &-add
+      background-color: #7dadd3
+  &__popup
+    .edit__label
+      margin-bottom: 5px
+  &__btn
+    margin-top: 15px

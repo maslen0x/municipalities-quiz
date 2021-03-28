@@ -64,7 +64,7 @@ const Indicators = () => {
                     {group.year}
                   </p>
                   {group.answers.map(card => (
-                    <IndicatorsCard key={card.year} {...card} />
+                    <IndicatorsCard key={card._id} {...card} />
                   ))}
                 </li>
               ))

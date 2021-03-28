@@ -16,7 +16,7 @@ import getValues from '../../utils/getValues'
 const Question = ({ _id, number, indicator, type, source, description, units, criteries, m, h }) => {
   const dispatch = useDispatch()
 
-  const [popupVisible, setPopupVisible] = useState(false)
+  const [isPopupVisible, setPopupVisible] = useState(false)
   const [evaluations, setEvaluations] = useState([])
 
   const quiz = useSelector(({ quiz }) => quiz)
@@ -68,10 +68,10 @@ const Question = ({ _id, number, indicator, type, source, description, units, cr
   }, [closePopupByClick, closePopupByKeydown])
 
   useEffect(() => {
-    popupVisible
+    isPopupVisible
       ? document.documentElement.style.overflow = 'hidden'
       : document.documentElement.style.overflow = ''
-  }, [popupVisible])
+  }, [isPopupVisible])
 
   useEffect(() => {
     const answer = quiz.find(answer => answer.question === _id)
@@ -153,7 +153,7 @@ const Question = ({ _id, number, indicator, type, source, description, units, cr
 
       <button onClick={onOpenPopup} aria-label="Добавить оценку" className="question__add" />
 
-      {popupVisible && (
+      {isPopupVisible && (
         <Popup
           onAdd={onAddEvaluation}
           onClose={onClosePopup}

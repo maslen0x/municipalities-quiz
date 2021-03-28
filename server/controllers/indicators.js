@@ -4,6 +4,7 @@ import Answer from '../models/Answer.js'
 
 import errorHandler from '../utils/errorHandler.js'
 import groupArrayByField from '../utils/groupArrayByField.js'
+import groupArrayByYear from '../utils/groupArrayByYear.js'
 import countAnswerResult from '../utils/countAnswerResult.js'
 
 export const getAll = async (req, res) => {
@@ -27,11 +28,7 @@ export const getAll = async (req, res) => {
       const answers = await Answer.find(query)
       const questions = await Question.find()
 
-      const groupedByYear = Object.values(answers.reduce((acc, el) => {
-        const year = new Date(el.date).getFullYear()
-        acc[year] = [...(acc[year] || []), el]
-        return acc
-      }, {}))
+      const groupedByYear = groupArrayByYear(answers)
 
       const grouped = groupedByYear.map(group => {
         return groupArrayByField(group, 'question') 
@@ -40,29 +37,17 @@ export const getAll = async (req, res) => {
       const counted = grouped.map(yearGroup => {
         const answers = yearGroup
           .map(questionGroup => {
+            const question = questions.find(question => question._id.toString() === questionGroup[0].question.toString())
+            const { _id, number, indicator, units, source, type, description, criteries } = question
+
             const results = questionGroup.map(answer => {
-              const question = questions.find(question => question._id.toString() === answer.question.toString())
-
               const { municipality } = answer
-              const { type } = question
-
               const obj = { municipality }
-
               return countAnswerResult(answer, type, false, obj)
             })
 
-            const question = questions.find(question => question._id.toString() === questionGroup[0].question.toString())
-            const { _id, type, source, units, number, indicator, description, criteries } = question
-
             return {
-              _id,
-              type,
-              source,
-              units,
-              number,
-              indicator,
-              description,
-              criteries,
+              _id, number, indicator, units, source, type, description, criteries,
               results: results.sort((a, b) => +a.result < +b.result ? 1 : -1)
             }
           })

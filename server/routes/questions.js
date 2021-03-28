@@ -1,10 +1,13 @@
 import { Router } from 'express'
 
-import { create, getAll } from '../controllers/questions.js'
+import { create, getAll, update } from '../controllers/questions.js'
+
+import auth from '../middlewares/auth.js'
 
 const router = Router()
 
-router.post('/', create)
+router.post('/', auth, create)
 router.get('/', getAll)
+router.put('/:id', auth, update)
 
 export default router

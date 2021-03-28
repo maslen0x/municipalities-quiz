@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-import { SET_QUIZ, SET_ANSWER, REMOVE_ANSWER } from "../constants";
+import { SET_QUIZ, SET_ANSWER, REMOVE_ANSWER } from "../constants"
 
 export const setQuiz = payload => ({
   type: SET_QUIZ,

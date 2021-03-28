@@ -1,5 +1,7 @@
 import React from 'react'
 
+import Label from '../Label'
+
 import { SCORES, CHECKBOXES, AVERAGE, PERCENTS } from '../../constants'
 
 import { getAnswerer } from '../../utils/parseQuestionData'
@@ -16,12 +18,11 @@ const Popup = ({ onAdd, onClose, type, source, evaluations, criteries, units, m,
               {criteries.map((criterion, index) => (
                 <li key={index}>
                   {type === SCORES && (
-                    <label>
-                      <p>{index + 1}) {criterion}</p>
+                    <Label label={`${index + 1}) ${criterion}`}>
                       <select className="question__select select">
                         {Array(5).fill(0).map((_, index) => <option key={index} value={index + 1}>{index + 1}</option>)}
                       </select>
-                    </label>
+                    </Label>
                   )}
 
                   {type === CHECKBOXES && (
@@ -37,23 +38,21 @@ const Popup = ({ onAdd, onClose, type, source, evaluations, criteries, units, m,
         )}
 
         {type === AVERAGE && (
-          <label className="popup__label">
-            <p>{criteries[0]} ({units})</p>
+          <Label label={`${criteries[0]} (${units})`} className="popup__label">
             <input type="number" min="0" required className="input" />
-          </label>
+          </Label>
         )}
 
         {type === PERCENTS && <>
-          <label className="popup__label">
-            <p>{m}</p>
+          <Label label={m} className="popup__label">
             <input type="number" name="m" min="0" required className="input" />
-          </label>
-          <label className="popup__label">
-            <p>{h}</p>
+          </Label>
+          <Label label={h} className="popup__label">
             <input type="number" name="h" min="0" required className="input" />
-          </label>
+          </Label>
         </>}
-        <button className="popup__save btn">Сохранить</button>
+
+        <button className="popup__btn btn">Сохранить</button>
       </form>
     </div>
   )

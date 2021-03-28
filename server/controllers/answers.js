@@ -4,6 +4,7 @@ import Municipality from '../models/Municipality.js'
 import User from '../models/User.js'
 
 import groupArrayByField from '../utils/groupArrayByField.js'
+import groupArrayByYear from '../utils/groupArrayByYear.js'
 import countAnswerResult from '../utils/countAnswerResult.js'
 import getMunicipalityName from '../utils/getMunicipalityName.js'
 import getYear from '../utils/getYear.js'
@@ -134,11 +135,7 @@ export const getRating = async (req, res) => {
     const answers = await Answer.find(query)
     const questions = await Question.find()
 
-    const groupedByYear = Object.values(answers.reduce((acc, el) => {
-      const year = new Date(el.date).getFullYear()
-      acc[year] = [...(acc[year] || []), el]
-      return acc
-    }, {}))
+    const groupedByYear = groupArrayByYear(answers)
 
     const groupedByQuestion = groupedByYear.map(group => groupArrayByField(group, 'question'))
 

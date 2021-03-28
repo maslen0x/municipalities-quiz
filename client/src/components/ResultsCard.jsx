@@ -25,8 +25,8 @@ const ResultsCard = ({ municipality, date, answers }) => {
           ))}
         </ul>
       )}
-      <button onClick={toggleMore} className="results-card__more">{more ? 'Свернуть' : 'Развернуть'}</button>
-      <Link to={`/results/${municipality}`} className="results-card__report">Подробнее</Link>
+      <button onClick={toggleMore} className="results-card__toggle">{more ? 'Свернуть' : 'Развернуть'}</button>
+      <Link to={`/results/${municipality}`} className="results-card__details">Подробнее</Link>
     </article>
   )
 }

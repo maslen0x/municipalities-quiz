@@ -8,9 +8,11 @@ import Info from './pages/Info'
 import TableOfIndicators from './pages/TableOfIndicators'
 import Results from './pages/Results'
 import Report from './pages/Report'
-import indicators from './pages/indicators'
+import Indicators from './pages/Indicators'
+import CurrentIndicator from './pages/CurrentIndicator'
 import Rating from './pages/Rating'
 import Graphics from './pages/Graphics'
+import Edit from './pages/Edit'
 
 import Header from './components/Header'
 import Sidebar from './components/Sidebar'
@@ -48,14 +50,16 @@ const App = () => {
     { path: '/table-of-indicators', component: TableOfIndicators },
     { path: '/results/:id', component: Report },
     { path: '/results', component: Results },
-    { path: '/indicators', component: indicators },
+    { path: '/indicators/:id', component: CurrentIndicator },
+    { path: '/indicators', component: Indicators },
     { path: '/rating', component: Rating },
-    { path: '/graphics', component: Graphics }
+    { path: '/graphics', component: Graphics },
+    { path: '/edit/:id', component: Edit }
   ]
 
   return (isReady && municipalities && questions) ? (
     user ? (
-      years && (
+      years ? (
         <div className="page">
           <Sidebar />
           <Header />
@@ -66,7 +70,7 @@ const App = () => {
             </Switch>
           </main>
         </div>
-      )
+      ) : 'Загрузка...'
     ) : (
       <Switch>
         <Route exact path="/" component={Quiz} />
