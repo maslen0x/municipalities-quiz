@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 
@@ -7,6 +7,8 @@ import Label from '../components/Label'
 import { AVERAGE, SCORES, CHECKBOXES, PERCENTS, RESPONDENTS, EXPERTS } from '../constants'
 
 import { fetchUpdateQuestion } from '../actions/questions'
+
+import usePopup from '../hooks/usePopup'
 
 import { getSource } from '../utils/parseQuestionData'
 import getRandom from '../utils/getRandom'
@@ -23,7 +25,7 @@ const Edit = () => {
 
   const question = questions.find(question => question._id === id)
 
-  const [isPopupVisible, setPopupVisible] = useState(false)
+  const { isPopupVisible, onOpenPopup, onClosePopup } = usePopup()
   const [form, setForm] = useState({ ...question })
 
   const onFormChange = e => {
@@ -39,27 +41,6 @@ const Edit = () => {
         return setForm({ ...form, [name]: value })
     }
   }
-
-  const closePopupByClick = useCallback(e => e.target.classList.contains('popup') && onClosePopup(), [])
-  const closePopupByKeydown = useCallback(e => e.key === 'Escape' && onClosePopup(), [])
-
-  const onOpenPopup = () => setPopupVisible(true)
-  const onClosePopup = () => setPopupVisible(false)
-
-  useEffect(() => {
-    document.addEventListener('click', closePopupByClick)
-    document.addEventListener('keydown', closePopupByKeydown)
-    return () => {
-      document.removeEventListener('click', closePopupByClick)
-      document.removeEventListener('keydown', closePopupByKeydown)
-    }
-  }, [closePopupByClick, closePopupByKeydown])
-
-  useEffect(() => {
-    isPopupVisible
-      ? document.documentElement.style.overflow = 'hidden'
-      : document.documentElement.style.overflow = ''
-  }, [isPopupVisible])
 
   const onAddCriterion = e => {
     e.preventDefault()
@@ -87,8 +68,6 @@ const Edit = () => {
     const redirect = () => history.push(`/indicators/${id}`)
     dispatch(fetchUpdateQuestion(token, id, data, redirect))
   }
-
-  //TODO вынести логику попапа (отсюда + question popup)
 
   return (
     <div className="edit">

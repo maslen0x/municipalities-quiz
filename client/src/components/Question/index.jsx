@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Answerers from './Answerers'
@@ -9,6 +9,8 @@ import { SCORES, CHECKBOXES, AVERAGE, PERCENTS } from '../../constants'
 
 import { setAnswer, removeAnswer } from '../../actions/quiz'
 
+import usePopup from '../../hooks/usePopup'
+
 import { getSource, getAnswerer } from '../../utils/parseQuestionData'
 import convertCheckboxesToScores from '../../utils/convertCheckboxesToScores'
 import getValues from '../../utils/getValues'
@@ -16,7 +18,7 @@ import getValues from '../../utils/getValues'
 const Question = ({ _id, number, indicator, type, source, description, units, criteries, m, h }) => {
   const dispatch = useDispatch()
 
-  const [isPopupVisible, setPopupVisible] = useState(false)
+  const { isPopupVisible, onOpenPopup, onClosePopup } = usePopup()
   const [evaluations, setEvaluations] = useState([])
 
   const quiz = useSelector(({ quiz }) => quiz)
@@ -51,27 +53,6 @@ const Question = ({ _id, number, indicator, type, source, description, units, cr
       ? dispatch(setAnswer(answer))
       : dispatch(removeAnswer(_id))
   }
-
-  const closePopupByClick = useCallback(e => e.target.classList.contains('popup') && onClosePopup(), [])
-  const closePopupByKeydown = useCallback(e => e.key === 'Escape' && onClosePopup(), [])
-
-  const onOpenPopup = () => setPopupVisible(true)
-  const onClosePopup = () => setPopupVisible(false)
-
-  useEffect(() => {
-    document.addEventListener('click', closePopupByClick)
-    document.addEventListener('keydown', closePopupByKeydown)
-    return () => {
-      document.removeEventListener('click', closePopupByClick)
-      document.removeEventListener('keydown', closePopupByKeydown)
-    }
-  }, [closePopupByClick, closePopupByKeydown])
-
-  useEffect(() => {
-    isPopupVisible
-      ? document.documentElement.style.overflow = 'hidden'
-      : document.documentElement.style.overflow = ''
-  }, [isPopupVisible])
 
   useEffect(() => {
     const answer = quiz.find(answer => answer.question === _id)
