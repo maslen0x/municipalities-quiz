@@ -31,9 +31,7 @@ const Indicators = () => {
   useEffect(() => {
     const query = getQueryString(filters.state)
     dispatch(fetchIndicators(token, query))
-    console.log(filters.state);
   }, [filters.state, dispatch, token])
-
 
   return (
     <div className="indicators">

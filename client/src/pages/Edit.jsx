@@ -61,7 +61,7 @@ const Edit = () => {
     const trimString = variable => typeof variable === 'string' ? variable.trim() : variable
     const keys = Object.keys(form)
     const data = keys.reduce((obj, key) => {
-      return form[key] && key !== '_id'
+      return form[key] !== undefined && key !== '_id'
         ? { ...obj, [key]: trimString(form[key]) }
         : obj
     }, {})

@@ -35,8 +35,6 @@ const Graphics = () => {
     setYears(filteredYears)
   }, [answers])
 
-  console.log(filters);
-
   return (
     <div className="graphics">
       <div className="graphics__container container">
