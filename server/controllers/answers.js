@@ -61,12 +61,14 @@ export const getShortInfo = async (req, res) => {
       return quiz.map(answer => {
         const question = questions.find(question => question._id.toString() === answer.question.toString())
         const { _id } = answer
-        const { type, number, indicator } = question
+        const { type, number, indicator, units, source } = question
 
         const obj = {
           _id,
           number,
-          indicator
+          indicator,
+          units,
+          source
         }
 
         return countAnswerResult(answer, type, false, obj)

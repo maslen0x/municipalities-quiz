@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import ResultsCard from '../components/ResultsCard'
@@ -6,6 +6,8 @@ import Sort from '../components/Sort'
 import Filter from '../components/Filter'
 
 import { fetchShortAnswers } from '../actions/answers'
+
+import useChange from '../hooks/useChange'
 
 import getQueryString from '../utils/getQueryString'
 
@@ -17,7 +19,7 @@ const Results = () => {
     { value: 'date', label: 'По дате' }
   ]
 
-  const [filters, setFilters] = useState({
+  const filters = useChange({
     sort: 'DEFAULT',
     municipality: 'DEFAULT',
     date: 'DEFAULT'
@@ -29,26 +31,21 @@ const Results = () => {
   const isLoading = useSelector(({ isLoading }) => isLoading)
   const municipalities = useSelector(({ municipalities }) => municipalities)
 
-  const onFilterChange = e => {
-    const { name, value } = e.target
-    setFilters({ ...filters, [name]: value })
-  }
-
   useEffect(() => {
     dispatch(fetchShortAnswers(token))
   }, [dispatch, token])
 
   useEffect(() => {
-    const query = getQueryString(filters)
+    const query = getQueryString(filters.state)
     dispatch(fetchShortAnswers(token, query))
-  }, [filters, dispatch, token])
+  }, [filters.state, dispatch, token])
 
   return (
     <div className="results">
       <div className="results__container container">
         <div className="results__header">
           <Sort
-            onChange={onFilterChange}
+            onChange={filters.onChange}
             options={sortOptions}
             caption="Сортировка"
             name="sort"
@@ -56,12 +53,12 @@ const Results = () => {
           />
           <div className="results__filters filters">
             <ul className="filters__list">
-              <Filter onChange={onFilterChange} caption="МО" name="municipality">
+              <Filter onChange={filters.onChange} caption="МО" name="municipality">
                 {municipalities.map(municipality => (
                   <option key={municipality._id} value={municipality._id}>{municipality.name}</option>
                 ))}
               </Filter>
-              <Filter onChange={onFilterChange} caption="Год" name="date">
+              <Filter onChange={filters.onChange} caption="Год" name="date">
                 {years.map(year => (
                   <option key={year} value={year}>{year}</option>
                 ))}

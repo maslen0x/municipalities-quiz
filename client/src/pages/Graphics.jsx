@@ -6,13 +6,15 @@ import Filter from '../components/Filter'
 
 import { fetchShortAnswers } from '../actions/answers'
 
+import useChange from '../hooks/useChange'
+
 import getYear from '../utils/getYear'
 
 const Graphics = () => {
   const dispatch = useDispatch()
 
   const [years, setYears] = useState(null)
-  const [filters, setFilters] = useState({
+  const filters = useChange({
     municipality: 'DEFAULT',
     year: 'DEFAULT'
   })
@@ -20,11 +22,6 @@ const Graphics = () => {
   const token = useSelector(({ user }) => user.token)
   const municipalities = useSelector(({ municipalities }) => municipalities)
   const answers = useSelector(({ answers }) => answers.short)
-
-  const onFilterChange = e => {
-    const { name, value } = e.target
-    setFilters({ ...filters, [name]: value })
-  }
 
   useEffect(() => {
     dispatch(fetchShortAnswers(token))
@@ -38,18 +35,20 @@ const Graphics = () => {
     setYears(filteredYears)
   }, [answers])
 
+  console.log(filters);
+
   return (
     <div className="graphics">
       <div className="graphics__container container">
         <div style={{ marginBottom: 15 }} className="graphics__header">
           <div className="graphics__filters filters">
             <ul className="filters__list">
-              <Filter onChange={onFilterChange} caption="МО" name="municipality">
+              <Filter onChange={filters.onChange} caption="МО" name="municipality">
                 {municipalities.map(municipality => (
                   <option key={municipality._id} value={municipality._id}>{municipality.name}</option>
                 ))}
               </Filter>
-              <Filter onChange={onFilterChange} caption="Год" name="year">
+              <Filter onChange={filters.onChange} caption="Год" name="year">
                 {years && years.map(year => (
                   <option key={year} value={year}>{year}</option>
                 ))}

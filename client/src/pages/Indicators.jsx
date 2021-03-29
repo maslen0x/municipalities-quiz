@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Filter from '../components/Filter'
 import IndicatorsCard from '../components/IndicatorsCard'
 
 import { fetchIndicators } from '../actions/indicators'
+
+import useChange from '../hooks/useChange'
 
 import getQueryString from '../utils/getQueryString'
 
@@ -17,24 +19,21 @@ const Indicators = () => {
   const years = useSelector(({ years }) => years)
   const isLoading = useSelector(({ isLoading }) => isLoading)
 
-  const [filters, setFilters] = useState({
+  const filters = useChange({
     question: 'DEFAULT',
     date: 'DEFAULT'
   })
-
-  const onFilterChange = e => {
-    const { name, value } = e.target
-    setFilters({ ...filters, [name]: value })
-  }
 
   useEffect(() => {
     dispatch(fetchIndicators(token))
   }, [dispatch, token])
 
   useEffect(() => {
-    const query = getQueryString(filters)
+    const query = getQueryString(filters.state)
     dispatch(fetchIndicators(token, query))
-  }, [filters, dispatch, token])
+    console.log(filters.state);
+  }, [filters.state, dispatch, token])
+
 
   return (
     <div className="indicators">
@@ -42,12 +41,12 @@ const Indicators = () => {
         <div className="indicators__header">
           <div className="indicators__filters filters">
             <ul className="filters__list">
-              <Filter onChange={onFilterChange} caption="Показатель" name="question">
+              <Filter onChange={filters.onChange} caption="Показатель" name="question">
                 {questions.map(question => (
                   <option key={question._id} value={question._id}>{question.number}</option>
                 ))}
               </Filter>
-              <Filter onChange={onFilterChange} caption="Год" name="date">
+              <Filter onChange={filters.onChange} caption="Год" name="date">
                 {years.map(year => (
                   <option key={year} value={year}>{year}</option>
                 ))}

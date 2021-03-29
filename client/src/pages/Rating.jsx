@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import RatingCard from '../components/RatingCard'
@@ -6,13 +6,15 @@ import Filter from '../components/Filter'
 
 import { fetchRating } from '../actions/answers'
 
+import useChange from '../hooks/useChange'
+
 import getYear from '../utils/getYear'
 import getQueryString from '../utils/getQueryString'
 
 const Rating = () => {
   const dispatch = useDispatch()
 
-  const [filters, setFilters] = useState({
+  const filters = useChange({
     municipality: 'DEFAULT',
     date: 'DEFAULT'
   })
@@ -23,19 +25,14 @@ const Rating = () => {
   const years = useSelector(({ years }) => years)
   const isLoading = useSelector(({ isLoading }) => isLoading)
 
-  const onFilterChange = e => {
-    const { name, value } = e.target
-    setFilters({ ...filters, [name]: value })
-  }
-
   useEffect(() => {
     dispatch(fetchRating(token))
   }, [dispatch, token])
 
   useEffect(() => {
-    const query = getQueryString(filters)
+    const query = getQueryString(filters.state)
     dispatch(fetchRating(token, query))
-  }, [filters, dispatch, token])
+  }, [filters.state, dispatch, token])
 
   return (
     <div className="rating">
@@ -43,12 +40,12 @@ const Rating = () => {
         <div className="rating__header">
           <div className="rating__filters filters">
             <ul className="filters__list">
-              <Filter onChange={onFilterChange} caption="МО" name="municipality">
+              <Filter onChange={filters.onChange} caption="МО" name="municipality">
                 {municipalities.map(municipality => (
                   <option key={municipality._id} value={municipality._id}>{municipality.name}</option>
                 ))}
               </Filter>
-              <Filter onChange={onFilterChange} caption="Год" name="date">
+              <Filter onChange={filters.onChange} caption="Год" name="date">
                 {years.map(year => (
                   <option key={year} value={year}>{year}</option>
                 ))}

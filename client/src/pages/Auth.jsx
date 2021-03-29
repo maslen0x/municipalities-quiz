@@ -1,24 +1,21 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useDispatch } from 'react-redux'
 
 import { logIn } from '../actions/user'
 
+import useChange from '../hooks/useChange'
+
 const Auth = () => {
   const dispatch = useDispatch()
 
-  const [form, setForm] = useState({
+  const form = useChange({
     login: '',
     password: ''
   })
 
-  const onInputChange = e => {
-    const { name, value } = e.target
-    setForm({ ...form, [name]: value})
-  }
-
   const onLogin = e => {
     e.preventDefault()
-    dispatch(logIn(form.login, form.password))
+    dispatch(logIn(form.state.login, form.state.password))
   }
 
   return (
@@ -26,16 +23,16 @@ const Auth = () => {
       <form onSubmit={onLogin} className="auth__form card">
         <h2 className="auth__title title">Авторизация</h2>
         <input
-          onChange={onInputChange}
-          value={form.login}
+          onChange={form.onChange}
+          value={form.state.login}
           type="text"
           name="login"
           placeholder="Логин"
           className="auth__input input"
         />
         <input
-          onChange={onInputChange}
-          value={form.password}
+          onChange={form.onChange}
+          value={form.state.password}
           type="password"
           name="password"
           placeholder="Пароль"
