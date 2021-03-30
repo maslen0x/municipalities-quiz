@@ -3,8 +3,9 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import RatingCard from '../components/RatingCard'
 import Filter from '../components/Filter'
+import Loading from '../components/Loading'
 
-import { fetchRating } from '../actions/answers'
+import { fetchRating, setRating } from '../actions/answers'
 
 import useChange from '../hooks/useChange'
 
@@ -23,10 +24,10 @@ const Rating = () => {
   const municipalities = useSelector(({ municipalities }) => municipalities)
   const rating = useSelector(({ answers }) => answers.rating)
   const years = useSelector(({ years }) => years)
-  const isLoading = useSelector(({ isLoading }) => isLoading)
 
   useEffect(() => {
     dispatch(fetchRating(token))
+    return () => dispatch(setRating([]))
   }, [dispatch, token])
 
   useEffect(() => {
@@ -54,20 +55,18 @@ const Rating = () => {
           </div>
         </div>
         <ul className="rating__list">
-          {!isLoading ? (
-            rating.length ? (
-              rating.map(group => (
-                <li key={group[0].date} className="rating__item">
-                  <p className="rating__year title">
-                    {getYear(group[0].date)}
-                  </p>
-                  {group.map(quiz => (
-                    <RatingCard key={quiz.municipality} {...quiz} />
-                  ))}
-                </li>
-              ))
-            ) : 'Список пуст'
-          ) : 'Загрузка...'}
+          <Loading state={rating}>
+            {rating.map(group => (
+              <li key={group[0].date} className="rating__item">
+                <p className="rating__year title">
+                  {getYear(group[0].date)}
+                </p>
+                {group.map(quiz => (
+                  <RatingCard key={quiz.municipality} {...quiz} />
+                ))}
+              </li>
+            ))}
+          </Loading>
         </ul>
       </div>
     </div>

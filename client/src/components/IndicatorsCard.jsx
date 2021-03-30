@@ -23,11 +23,11 @@ const IndicatorsCard = ({ _id, number, indicator, units, source, type, descripti
       <div className="indicators-card__description">{getDescription({ type, description, criteries })}</div>
       {isResultsVisible && (
         <ul className="indicators-card__list">
-          {results.map(item => (
+          {results.map((item, index) => (
               <li key={item.municipality} className="indicators-card__item">
                 <p className="indicators-card__municipality">
                   <Link to={`/results/${item.municipality}`} className="indicators-card__link">
-                    {getMunicipalityName(municipalities, item.municipality)}
+                   {index + 1}. {getMunicipalityName(municipalities, item.municipality)}
                   </Link> — {item.result}{type === PERCENTS && '%'}
                 </p>
               </li>

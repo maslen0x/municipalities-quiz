@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Bar, Line, Pie } from 'react-chartjs-2'
 
 import Filter from '../components/Filter'
 
-import { fetchShortAnswers } from '../actions/answers'
+import { fetchShortAnswers, fetchRating, setShortAnswers, setRating } from '../actions/answers'
 
 import useChange from '../hooks/useChange'
 
-import getYear from '../utils/getYear'
+import getQueryString from '../utils/getQueryString'
+import getMunicipalityName from '../utils/getMunicipalityName'
 
 const Graphics = () => {
   const dispatch = useDispatch()
 
-  const [years, setYears] = useState(null)
   const filters = useChange({
     municipality: 'DEFAULT',
     year: 'DEFAULT'
@@ -22,18 +22,23 @@ const Graphics = () => {
   const token = useSelector(({ user }) => user.token)
   const municipalities = useSelector(({ municipalities }) => municipalities)
   const answers = useSelector(({ answers }) => answers.short)
+  const rating = useSelector(({ answers }) => answers.rating)
+  const years = useSelector(({ years }) => years)
 
   useEffect(() => {
     dispatch(fetchShortAnswers(token))
+    dispatch(fetchRating(token))
+    return () => {
+      dispatch(setShortAnswers([]))
+      dispatch(setRating([]))
+    }
   }, [dispatch, token])
 
   useEffect(() => {
-    if(!answers)
-      return
-    const yearsArr = answers.map(answer => getYear(answer.date))
-    const filteredYears = [...new Set(yearsArr.reverse())]
-    setYears(filteredYears)
-  }, [answers])
+    const query = getQueryString(filters.state)
+    dispatch(fetchShortAnswers(token, query))
+    dispatch(fetchRating(token, query))
+  }, [filters.state, dispatch, token])
 
   return (
     <div className="graphics">
@@ -46,7 +51,7 @@ const Graphics = () => {
                   <option key={municipality._id} value={municipality._id}>{municipality.name}</option>
                 ))}
               </Filter>
-              <Filter onChange={filters.onChange} caption="Год" name="year">
+              <Filter onChange={filters.onChange} caption="Год" name="date">
                 {years && years.map(year => (
                   <option key={year} value={year}>{year}</option>
                 ))}
@@ -54,9 +59,9 @@ const Graphics = () => {
             </ul>
           </div>
         </div>
-        <Line
+        {/* <Line
           data={{
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+            labels: answers.map(answer => answer.number),
             datasets: [
               {
                 label: 'My First dataset',
@@ -81,45 +86,41 @@ const Graphics = () => {
               }
             ]
           }}
-        />
-        <Bar
-          data={{
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            datasets: [
-              {
-                label: 'My First dataset',
+        /> */}
+        {answers[0] ? (
+          <Bar
+            data={{
+              labels: answers[0].answers.map(answer => answer.number),
+              datasets: [
+                {
+                  label: getMunicipalityName(municipalities, answers[0].municipality),
+                  data: answers[0].answers.map(answer => answer.result),
+                  backgroundColor: 'rgba(255,99,132,0.2)',
+                  borderColor: 'rgba(255,99,132,1)',
+                  borderWidth: 1,
+                  hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+                  hoverBorderColor: 'rgba(255,99,132,1)'
+                }
+              ]
+            }}
+          />
+        ) : <p>Данных нет</p>}
+        {rating[0] ? (
+          <Bar
+            data={{
+              labels: rating[0][0].answers.map(answer => answer.question.number),
+              datasets: [{
+                label: getMunicipalityName(municipalities, rating[0][0].municipality),
+                data: rating[0][0].answers.map(answer => answer.result),
                 backgroundColor: 'rgba(255,99,132,0.2)',
                 borderColor: 'rgba(255,99,132,1)',
                 borderWidth: 1,
                 hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-                hoverBorderColor: 'rgba(255,99,132,1)',
-                data: [65, 59, 80, 81, 56, 55, 40]
-              }
-            ]
-          }}
-        />
-        <Pie
-          data={{
-            labels: [
-              'Red',
-              'Blue',
-              'Yellow'
-            ],
-            datasets: [{
-              data: [300, 50, 100],
-              backgroundColor: [
-              '#FF6384',
-              '#36A2EB',
-              '#FFCE56'
-              ],
-              hoverBackgroundColor: [
-              '#FF6384',
-              '#36A2EB',
-              '#FFCE56'
-              ]
-            }]
-          }}
-        />
+                hoverBorderColor: 'rgba(255,99,132,1)'
+              }]
+            }}
+          />
+        ) : <p>Данных нет</p>}
       </div>
     </div>
   )

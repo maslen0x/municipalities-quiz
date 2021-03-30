@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from 'react-redux'
 import ResultsCard from '../components/ResultsCard'
 import Sort from '../components/Sort'
 import Filter from '../components/Filter'
+import Loading from '../components/Loading'
 
-import { fetchShortAnswers } from '../actions/answers'
+import { fetchShortAnswers, setShortAnswers } from '../actions/answers'
 
 import useChange from '../hooks/useChange'
 
@@ -28,11 +29,11 @@ const Results = () => {
   const token = useSelector(({ user }) => user.token)
   const answers = useSelector(({ answers }) => answers.short)
   const years = useSelector(({ years }) => years)
-  const isLoading = useSelector(({ isLoading }) => isLoading)
   const municipalities = useSelector(({ municipalities }) => municipalities)
 
   useEffect(() => {
     dispatch(fetchShortAnswers(token))
+    return () => dispatch(setShortAnswers([]))
   }, [dispatch, token])
 
   useEffect(() => {
@@ -67,15 +68,13 @@ const Results = () => {
           </div>
         </div>
           <ul className="results__list">
-            {!isLoading ? (
-              answers.length ? (
-                answers.map(quiz => (
-                  <li key={`${quiz.municipality}${quiz.date}`} className="results__item">
-                    <ResultsCard {...quiz} />
-                  </li>
-                ))
-              ) : 'Список пуст'
-            ) : 'Загрузка...'}
+            <Loading state={answers}>
+              {answers.map(quiz => (
+                <li key={`${quiz.municipality}${quiz.date}`} className="results__item">
+                  <ResultsCard {...quiz} />
+                </li>
+              ))}
+            </Loading>
           </ul>
       </div>
     </div>

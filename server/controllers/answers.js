@@ -112,12 +112,20 @@ export const getFullInfo = async (req, res) => {
 
     const { municipality } = req.params
     const answers = await Answer.find({ municipality })
+    const questions = await Question.find()
 
-    const groupedByDate = groupArrayByField(answers, 'date')
+    const mapped = answers.map(answer => ({
+      ...answer._doc,
+      question: questions.find(question => question._id.toString() === answer._doc.question.toString())
+    }))
 
-    const latest = groupedByDate[groupedByDate.length - 1]
+    const grouped = groupArrayByField(mapped, 'date')
 
-    return res.json(latest)
+    const latest = grouped[grouped.length - 1]
+
+    const sorted = latest.sort((a, b) => a.question.number > b.question.number ? 1 : -1)
+
+    return res.json(sorted)
   } catch (e) {
     console.log(e)
     return errorHandler(res)

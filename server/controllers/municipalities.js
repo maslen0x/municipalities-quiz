@@ -16,7 +16,8 @@ export const create = async (req, res) => {
 export const getAll = async (req, res) => {
   try {
     const municipalities = await Municipality.find()
-    return res.json(municipalities)
+    const sorted = municipalities.sort((a, b) => a.name > b.name ? 1 : -1)
+    return res.json(sorted)
   } catch (e) {
     console.log(e)
     return errorHandler(res)

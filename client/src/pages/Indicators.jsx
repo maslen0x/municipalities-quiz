@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import Filter from '../components/Filter'
 import IndicatorsCard from '../components/IndicatorsCard'
 
-import { fetchIndicators } from '../actions/indicators'
+import { fetchIndicators, setIndicators } from '../actions/indicators'
 
 import useChange from '../hooks/useChange'
 
@@ -26,6 +26,7 @@ const Indicators = () => {
 
   useEffect(() => {
     dispatch(fetchIndicators(token))
+    return () => dispatch(setIndicators([]))
   }, [dispatch, token])
 
   useEffect(() => {

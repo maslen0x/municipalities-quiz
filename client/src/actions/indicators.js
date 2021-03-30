@@ -4,7 +4,7 @@ import { setLoading } from '../actions/isLoading'
 
 import { SET_INDICATORS } from '../constants'
 
-const setIndicators = payload => ({
+export const setIndicators = payload => ({
   type: SET_INDICATORS,
   payload
 })
