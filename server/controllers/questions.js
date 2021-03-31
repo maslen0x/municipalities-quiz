@@ -21,8 +21,9 @@ export const create = async (req, res) => {
       m,
       h
     })
+
     await question.save()
-    res.json(question)
+    return res.json(question)
   } catch (e) {
     console.log(e)
     return errorHandler(res)
@@ -32,7 +33,7 @@ export const create = async (req, res) => {
 export const getAll = async (req, res) => {
   try {
     const questions = await Question.find().sort({ number: 1 })
-    res.json(questions)
+    return res.json(questions)
   } catch (e) {
     console.log(e)
     return errorHandler(res)

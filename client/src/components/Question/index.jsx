@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import Answerers from './Answerers'
 import Result from './Result'
-import Popup from './Popup'
+import QuestionPopup from './QuestionPopup'
 
 import { SCORES, CHECKBOXES, AVERAGE, PERCENTS } from '../../constants'
 
@@ -135,7 +135,7 @@ const Question = ({ _id, number, indicator, type, source, description, units, cr
       <button onClick={onOpenPopup} aria-label="Добавить оценку" className="question__add" />
 
       {isPopupVisible && (
-        <Popup
+        <QuestionPopup
           onAdd={onAddEvaluation}
           onClose={onClosePopup}
           type={type}

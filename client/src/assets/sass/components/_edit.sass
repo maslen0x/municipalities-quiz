@@ -1,4 +1,6 @@
 .edit
+  &__container
+    max-width: 800px
   &__form
     & > *
       &:not(:last-child)
@@ -7,10 +9,6 @@
     display: block
   &__input
     width: 100%
-  &__textarea
-    min-width: 100%
-    max-width: 100%
-    min-height: 80px
   &__criteries
     &-title,
     &-list
@@ -20,6 +18,7 @@
       &:not(:last-child)
         margin-bottom: 5px
     &-remove
+      flex-shrink: 0
       width: 20px
       height: 20px
       background: #7dadd3 url(../../img/cross.svg) 50% / 10px no-repeat

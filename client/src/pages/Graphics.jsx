@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Bar, Line, Pie } from 'react-chartjs-2'
+import { Bar } from 'react-chartjs-2'
 
 import Filter from '../components/Filter'
 

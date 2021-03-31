@@ -8,7 +8,6 @@ const Answerers = ({ evaluations, answerer, onRemove, getValues }) => {
       {evaluations.map((evaluation, index) => (
         <li key={getRandom()}>
           <button onClick={() => onRemove(index)} aria-label="Удалить оценку" className="question__remove" />
-          {/* <button aria-label="Редактировать оценку" className="question__edit" /> */}
           <p className="question__answerer">{answerer} {index + 1}: {getValues(evaluation)}</p>
         </li>
       ))}
@@ -17,5 +16,3 @@ const Answerers = ({ evaluations, answerer, onRemove, getValues }) => {
 }
 
 export default Answerers
-
-//TODO сделать редактирование ответов на странице с анкетов

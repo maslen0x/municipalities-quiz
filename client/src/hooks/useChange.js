@@ -10,7 +10,8 @@ const useChange = initialState => {
 
   return {
     state,
-    onChange
+    onChange,
+    setState
   }
 }
 

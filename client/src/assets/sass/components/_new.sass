@@ -1,0 +1,33 @@
+.new
+  &__container
+    max-width: 800px
+  &__title
+    text-align: center
+    margin-bottom: 10px
+  &__label
+    display: block
+    margin-bottom: 5px
+    &:last-of-type
+      margin-bottom: 15px
+  &__input
+    width: 100%
+  &__actions
+    display: flex
+  &__next,
+  &__add
+    margin-left: auto
+  &__criteries
+    margin-bottom: 15px
+    &-title,
+    &-list
+      margin-bottom: 5px
+    &-item
+      display: flex
+      &:not(:last-child)
+        margin-bottom: 5px
+    &-remove
+      flex-shrink: 0
+      width: 20px
+      height: 20px
+      background: $light-blue url(../../img/cross.svg) 50% / 10px no-repeat
+      margin: 1px 5px 0 0

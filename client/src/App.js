@@ -13,6 +13,7 @@ import CurrentIndicator from './pages/CurrentIndicator'
 import Rating from './pages/Rating'
 import Graphics from './pages/Graphics'
 import Edit from './pages/Edit'
+import New from './pages/New'
 
 import Header from './components/Header'
 import Sidebar from './components/Sidebar'
@@ -54,7 +55,8 @@ const App = () => {
     { path: '/indicators', component: Indicators },
     { path: '/rating', component: Rating },
     { path: '/graphics', component: Graphics },
-    { path: '/edit/:id', component: Edit }
+    { path: '/edit/:id', component: Edit },
+    { path: '/new', component: New }
   ]
 
   return (isReady && municipalities && questions) ? (

@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useHistory, useParams } from 'react-router-dom'
 
+import Popup from '../components/Popup'
 import Label from '../components/Label'
 
 import { AVERAGE, SCORES, CHECKBOXES, PERCENTS, RESPONDENTS, EXPERTS } from '../constants'
@@ -46,7 +47,10 @@ const Edit = () => {
     e.preventDefault()
     const elements = Array.from(e.target.elements)
     const input = elements.find(el => el.nodeName === 'INPUT')
-    const criteries = [...form.criteries, input.value.trim()]
+    const value = input.value.trim()
+    if(!value)
+      return alert('Введите название критерия')
+    const criteries = [...form.criteries, value]
     setForm({ ...form, criteries })
     onClosePopup()
   }
@@ -92,7 +96,7 @@ const Edit = () => {
 
           {form.description && (
             <Label label="Описание" className="edit__label">
-              <textarea onChange={onFormChange} value={form.description} name="description" className="edit__textarea input" />
+              <textarea onChange={onFormChange} value={form.description} name="description" className="edit__textarea textarea" />
             </Label>
           )}
 
@@ -100,12 +104,14 @@ const Edit = () => {
             <div className="edit__criteries">
               <p className="edit__criteries-title">Критерии:</p>
               <ul className="edit__criteries-list">
-                {form.criteries.map((criterion, index) => (
-                  <li key={getRandom()} className="edit__criteries-item">
-                    <button onClick={() => onRemoveCriterion(index)} type="button" aria-label="Удалить критерий" className="edit__criteries-remove" />
-                    <p className="edit__criteries-text">{criterion}</p>
-                  </li>
-                ))}
+                {form.criteries.length ? (
+                  form.criteries.map((criterion, index) => (
+                    <li key={getRandom()} className="edit__criteries-item">
+                      <button onClick={() => onRemoveCriterion(index)} type="button" aria-label="Удалить критерий" className="edit__criteries-remove" />
+                      <p className="edit__criteries-text">{criterion}</p>
+                    </li>
+                  ))
+                ) : 'Список критериев пуст'}
               </ul>
               <button onClick={onOpenPopup} type="button" aria-label="Добавить критерий" className="edit__criteries-add btn">Добавить</button>
             </div>
@@ -139,15 +145,11 @@ const Edit = () => {
         </form>
 
         {isPopupVisible && (
-          <div className="edit__popup popup">
-            <form onSubmit={onAddCriterion} className="popup__body">
-              <button type="button" onClick={onClosePopup} aria-label="Закрыть окно" className="popup__close" />
-              <Label label="Введите название критерия" className="edit__label">
-                <input type="text" className="edit__input input" />
-              </Label>
-              <button className="popup__btn btn">Добавить</button>
-            </form>
-          </div>
+          <Popup onSubmit={onAddCriterion} onClose={onClosePopup} btnText="Добавить" className="edit__popup">
+            <Label label="Введите название критерия" className="edit__label">
+              <input type="text" className="edit__input input" />
+            </Label>
+          </Popup>
         )}
       </div>
     </div>
