@@ -38,17 +38,23 @@ export const getAll = async (req, res) => {
         const answers = yearGroup
           .map(questionGroup => {
             const question = questions.find(question => question._id.toString() === questionGroup[0].question.toString())
-            const { _id, number, indicator, units, source, type, description, criteries } = question
+            const { _id, number, indicator, units, source, type, description, criteries, reverse } = question
 
-            const results = questionGroup.map(answer => {
-              const { municipality } = answer
-              const obj = { municipality }
-              return countAnswerResult(answer, type, false, obj)
-            })
+            const results = questionGroup
+              .map(answer => {
+                const { municipality } = answer
+                const obj = { municipality }
+                return countAnswerResult(answer, type, false, obj)
+              })
+              .sort((a, b) => {
+                return reverse
+                  ? +a.result > +b.result ? 1 : -1
+                  : +a.result < +b.result ? 1 : -1
+              })
 
             return {
               _id, number, indicator, units, source, type, description, criteries,
-              results: results.sort((a, b) => +a.result < +b.result ? 1 : -1)
+              results
             }
           })
           .sort((a, b) => a.number > b.number ? 1 : -1)
