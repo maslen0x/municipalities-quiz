@@ -47,7 +47,7 @@ const Description = ({ type, description, m, h, criteries, onDecStep, onIncStep,
     if(errorsList)
       return alert(errorsList)
 
-    const parsedData = () => {
+    const getParsedData = () => {
       switch(type) {
         case AVERAGE:
           return { ...data.state, criteries: [averageCriterion] }
@@ -62,8 +62,9 @@ const Description = ({ type, description, m, h, criteries, onDecStep, onIncStep,
           return data.state
       }
     }
+    const parsedData = getParsedData()
 
-    onAdd(parsedData())
+    onAdd(parsedData)
   }
 
   const onAddCriterion = e => {

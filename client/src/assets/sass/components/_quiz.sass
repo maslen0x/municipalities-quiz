@@ -1,6 +1,4 @@
 .quiz
-  box-shadow: $shadow
-  padding: 15px
   margin: 15px
   &__select
     margin-bottom: 15px
@@ -15,6 +13,8 @@
     margin: 5px 0
     &:first-child
       margin-top: 0
+    &.question__popup
+      margin: 0
   &__remove
     width: 20px
     height: 20px
@@ -44,36 +44,3 @@
       line-height: 20px
       &:not(:last-child)
         margin-bottom: 5px
-
-.popup
-  position: fixed
-  top: 0
-  left: 0
-  z-index: 100
-  width: 100vw
-  height: 100vh
-  display: flex
-  justify-content: center
-  align-items: center
-  background-color: rgba(#000, .5)
-  padding: 30px
-  margin: 0
-  &__body
-    position: relative
-    width: 600px
-    max-height: calc(100vh - 60px)
-    background-color: #fff
-    padding: 15px
-    overflow-y: auto
-  &__title
-    margin-bottom: 5px
-  &__close
-    position: absolute
-    top: 0
-    right: 0
-    width: 30px
-    height: 30px
-    background: url(../../img/dark-cross.svg) center / 10px no-repeat
-  &__label
-    display: block
-    margin-bottom: 10px

@@ -12,14 +12,28 @@
       margin-bottom: 15px
 
 .indicators-card
+  position: relative
+  padding-right: 30px
   &:not(:last-child)
     margin-bottom: 15px
   & > *
     &:not(:last-child)
       margin-bottom: 5px
+    &.indicators-card__toggle
+      margin-bottom: 0
   &__toggle
     display: block
-    margin-bottom: 0 !important
+  &__remove
+    position: absolute
+    top: 0
+    right: 0
+    width: 30px
+    height: 30px
+    background: url(../../img/dark-cross.svg) center / 10px no-repeat
+  &__restore
+    position: absolute
+    bottom: 15px
+    right: 15px
 
 .indicators-table
   &__title

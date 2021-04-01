@@ -5,6 +5,7 @@ import Filter from '../components/Filter'
 import IndicatorsCard from '../components/IndicatorsCard'
 
 import { fetchIndicators, setIndicators } from '../actions/indicators'
+import { fetchRemoveQuestion, fetchRestoreQuestion } from '../actions/questions'
 
 import useChange from '../hooks/useChange'
 
@@ -34,6 +35,28 @@ const Indicators = () => {
     dispatch(fetchIndicators(token, query))
   }, [filters.state, dispatch, token])
 
+  const onAction = (id, token, confirm, cb) => {
+    if(window.confirm(confirm)) {
+      const query = getQueryString(filters.state)
+      const reload = () => dispatch(fetchIndicators(token, query))
+      dispatch(cb(token, id, reload))
+    }
+  }
+
+  const onRemove = id => onAction(
+    id,
+    token,
+    'Вы действительно хотите удалить показатель? Все отчеты по нему сохранятся, но он не будет доступен в общем опросе.',
+    fetchRemoveQuestion
+  )
+
+  const onRestore = id => onAction(
+    id,
+    token,
+    'Вы действительно хотите восстановить показатель? Он будет доступен в общем опросе.',
+    fetchRestoreQuestion
+  )
+
   return (
     <div className="indicators">
       <div className="indicators__container container">
@@ -62,7 +85,7 @@ const Indicators = () => {
                     {group.year}
                   </p>
                   {group.answers.map(card => (
-                    <IndicatorsCard key={card._id} {...card} />
+                    <IndicatorsCard key={card._id} {...card} onRemove={onRemove} onRestore={onRestore} />
                   ))}
                 </li>
               ))

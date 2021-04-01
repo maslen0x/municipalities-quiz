@@ -17,14 +17,8 @@ const New = () => {
 
   const onAdd = data => {
     const newIndicator = { ...form, ...data }
-    const keys = Object.keys(newIndicator)
-    const filtered = keys.reduce((acc, key) => {
-      if(newIndicator[key])
-        acc[key] = newIndicator[key]
-      return acc
-    }, {})
     const redirect = () => history.push('/table-of-indicators')
-    dispatch(fetchCreateQuestion(token, filtered, redirect))
+    dispatch(fetchCreateQuestion(token, newIndicator, redirect))
   }
 
   return (

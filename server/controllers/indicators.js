@@ -38,7 +38,7 @@ export const getAll = async (req, res) => {
         const answers = yearGroup
           .map(questionGroup => {
             const question = questions.find(question => question._id.toString() === questionGroup[0].question.toString())
-            const { _id, number, indicator, units, source, type, description, criteries, reverse } = question
+            const { _id, number, indicator, units, source, type, description, criteries, reverse, isDeleted } = question
 
             const results = questionGroup
               .map(answer => {
@@ -52,10 +52,7 @@ export const getAll = async (req, res) => {
                   : +a.result < +b.result ? 1 : -1
               })
 
-            return {
-              _id, number, indicator, units, source, type, description, criteries,
-              results
-            }
+            return { _id, number, indicator, units, source, type, description, criteries, isDeleted, results }
           })
           .sort((a, b) => a.number > b.number ? 1 : -1)
 

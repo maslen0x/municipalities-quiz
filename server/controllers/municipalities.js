@@ -4,6 +4,10 @@ import errorHandler from '../utils/errorHandler.js'
 
 export const create = async (req, res) => {
   try {
+    const user = await User.findById(req.user.id)
+    if(!user)
+      return errorHandler(res, 403, 'Доступ ограничен')
+
     const municipalities = req.body
     await Municipality.insertMany(municipalities)
     return res.json(municipalities)

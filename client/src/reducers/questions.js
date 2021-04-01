@@ -1,4 +1,4 @@
-import { SET_QUESTIONS, CREATE_QUESTION, UPDATE_QUESTION } from '../constants'
+import { SET_QUESTIONS, CREATE_QUESTION, UPDATE_QUESTION, REMOVE_QUESTION } from '../constants'
 
 const initialState = null
 
@@ -13,7 +13,12 @@ const questions = (state = initialState, action) => {
       return [...state, payload].sort((a, b) => a.number > b.number ? 1 : -1)
 
     case UPDATE_QUESTION:
-      return state.map(question => question._id === payload.id ? payload.data : question)
+      return state
+        .map(question => question._id === payload.id ? payload.data : question)
+        .sort((a, b) => a.number > b.number ? 1 : -1)
+
+    case REMOVE_QUESTION:
+      return state.filter(question => question._id !== payload)
 
     default:
       return state

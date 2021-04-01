@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link } from 'react-router-dom'
 
+import DeletedFlag from './DeletedFlag'
+
 import getMunicipalityName from '../utils/getMunicipalityName'
 import { getUnits } from '../utils/parseQuestionData'
 
@@ -20,7 +22,9 @@ const ResultsCard = ({ municipality, date, answers }) => {
         <ul className="results-card__list">
           {answers.map(answer => (
             <li key={answer._id} className="results-card__item">
-              <p className="results-card__indicator"><b>{answer.number}</b> {answer.indicator} ({answer.units || getUnits(answer.source)})</p>
+              <p className="results-card__indicator">
+                <b>{answer.number}</b> {answer.indicator} ({answer.units || getUnits(answer.source)}) <DeletedFlag isDeleted={answer.isDeleted} />
+              </p>
               <p className="results-card__result">Результат: {answer.result}</p>
             </li>
           ))}

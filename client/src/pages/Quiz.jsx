@@ -52,7 +52,7 @@ const Quiz = () => {
 
   return (
     <div className="container">
-      <div className="quiz">
+      <div className="quiz card">
         <select onChange={onSelect} value={municipality || 'DEFAULT'} name="municipalities[]" className="quiz__select select">
           <option value="DEFAULT" disabled>Выберите муниципальное образование</option>
           {municipalities.map(municipality => (

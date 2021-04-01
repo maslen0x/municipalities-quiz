@@ -2,6 +2,8 @@ import React from 'react'
 
 import { AVERAGE, CHECKBOXES, SCORES, PERCENTS } from '../constants'
 
+import DeletedFlag from './DeletedFlag'
+
 import getRandom from '../utils/getRandom'
 import { getSource, getDescription, getAnswerer, getUnits } from '../utils/parseQuestionData'
 import convertCheckboxesToScores from '../utils/convertCheckboxesToScores'
@@ -10,7 +12,9 @@ import countResult from '../utils/countResult'
 const Answer = ({ question, evaluations, m, h }) => {
   return (
     <article className="answer-card">
-      <p className="answer-card__title"><b>{question.number}</b> {question.indicator}</p>
+      <p className="answer-card__title">
+        <b>{question.number}</b> {question.indicator} <DeletedFlag isDeleted={question.isDeleted} />
+      </p>
       <p className="answer-card__source">{getSource(question.source)}</p>
       <div className="answer-card__description">{getDescription(question)}</div>
 
