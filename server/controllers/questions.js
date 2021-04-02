@@ -1,5 +1,6 @@
-import Question from '../models/Question.js'
 import User from '../models/User.js'
+import Question from '../models/Question.js'
+import Answer from '../models/Answer.js'
 
 import errorHandler from '../utils/errorHandler.js'
 
@@ -113,6 +114,13 @@ export const remove = async (req, res) => {
       return errorHandler(res, 403, 'Доступ ограничен')
 
     const { id } = req.params
+
+    const answers = await Answer.find({ question: id })
+
+    if(!answers.length) {
+      await Question.deleteOne({ _id: id })
+      return res.json({ message: 'Показатель полностью удален' })
+    }
 
     const question = await Question.findByIdAndUpdate(id, { $set: { isDeleted: true } }, { new: true })
 
