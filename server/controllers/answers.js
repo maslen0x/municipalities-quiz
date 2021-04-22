@@ -29,6 +29,15 @@ export const sendQuiz = async (req, res) => {
   }
 }
 
+export const sendAnswer = async (req, res) => {
+  try {
+    
+  } catch (e) {
+    console.log(e)
+    return errorHandler(res)
+  }
+}
+
 export const getShortInfo = async (req, res) => {
   try {
     const user = await User.findById(req.user.id)

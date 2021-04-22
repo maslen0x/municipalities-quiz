@@ -59,40 +59,12 @@ const Graphics = () => {
             </ul>
           </div>
         </div>
-        {/* <Line
-          data={{
-            labels: answers.map(answer => answer.number),
-            datasets: [
-              {
-                label: 'My First dataset',
-                fill: false,
-                lineTension: 0.1,
-                backgroundColor: 'rgba(75,192,192,0.4)',
-                borderColor: 'rgba(75,192,192,1)',
-                borderCapStyle: 'butt',
-                borderDash: [],
-                borderDashOffset: 0.0,
-                borderJoinStyle: 'miter',
-                pointBorderColor: 'rgba(75,192,192,1)',
-                pointBackgroundColor: '#fff',
-                pointBorderWidth: 1,
-                pointHoverRadius: 5,
-                pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-                pointHoverBorderColor: 'rgba(220,220,220,1)',
-                pointHoverBorderWidth: 2,
-                pointRadius: 1,
-                pointHitRadius: 10,
-                data: [65, 59, 80, 81, 56, 55, 40]
-              }
-            ]
-          }}
-        /> */}
-        {answers[0] ? (
-          <Bar
-            data={{
-              labels: answers[0].answers.map(answer => answer.number),
-              datasets: [
-                {
+        {answers[0] && rating[0] ? (
+          <>
+            <Bar
+              data={{
+                labels: answers[0].answers.map(answer => answer.number),
+                datasets: [{
                   label: getMunicipalityName(municipalities, answers[0].municipality),
                   data: answers[0].answers.map(answer => answer.result),
                   backgroundColor: 'rgba(255,99,132,0.2)',
@@ -100,27 +72,25 @@ const Graphics = () => {
                   borderWidth: 1,
                   hoverBackgroundColor: 'rgba(255,99,132,0.4)',
                   hoverBorderColor: 'rgba(255,99,132,1)'
-                }
-              ]
-            }}
-          />
-        ) : <p>Данных нет</p>}
-        {rating[0] ? (
-          <Bar
-            data={{
-              labels: rating[0][0].answers.map(answer => answer.question.number),
-              datasets: [{
-                label: getMunicipalityName(municipalities, rating[0][0].municipality),
-                data: rating[0][0].answers.map(answer => answer.result),
-                backgroundColor: 'rgba(255,99,132,0.2)',
-                borderColor: 'rgba(255,99,132,1)',
-                borderWidth: 1,
-                hoverBackgroundColor: 'rgba(255,99,132,0.4)',
-                hoverBorderColor: 'rgba(255,99,132,1)'
-              }]
-            }}
-          />
-        ) : <p>Данных нет</p>}
+                }]
+              }}
+            />
+            <Bar
+              data={{
+                labels: rating[0][0].answers.map(answer => answer.question.number),
+                datasets: [{
+                  label: getMunicipalityName(municipalities, rating[0][0].municipality),
+                  data: rating[0][0].answers.map(answer => answer.result),
+                  backgroundColor: 'rgba(255,99,132,0.2)',
+                  borderColor: 'rgba(255,99,132,1)',
+                  borderWidth: 1,
+                  hoverBackgroundColor: 'rgba(255,99,132,0.4)',
+                  hoverBorderColor: 'rgba(255,99,132,1)'
+                }]
+              }}
+            />
+          </>
+        ) : 'Загрузка...'}
       </div>
     </div>
   )

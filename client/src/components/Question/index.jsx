@@ -57,10 +57,21 @@ const Question = ({ _id, number, indicator, type, source, description, units, cr
   useEffect(() => {
     const answer = quiz.find(answer => answer.question === _id)
     if(answer) {
-      const { evaluations, m, h } = answer
-      type === AVERAGE && setEvaluations(evaluations[0]);
-      (type === SCORES || type === CHECKBOXES) && setEvaluations(evaluations);
-      type === PERCENTS && setEvaluations({ m, h });
+      const getData = answer => {
+        const { evaluations, m, h } = answer
+        switch(type) {
+          case AVERAGE:
+            return evaluations[0]
+
+          case PERCENTS:
+            return { m, h }
+
+          default:
+            return evaluations
+        }
+      }
+      const data = getData(answer)
+      setEvaluations(data)
     } else {
       setEvaluations([])
     }

@@ -14,6 +14,7 @@ import Rating from './pages/Rating'
 import Graphics from './pages/Graphics'
 import Edit from './pages/Edit'
 import New from './pages/New'
+import Answer from './pages/Answer'
 
 import Header from './components/Header'
 import Sidebar from './components/Sidebar'
@@ -56,7 +57,8 @@ const App = () => {
     { path: '/rating', component: Rating },
     { path: '/graphics', component: Graphics },
     { path: '/edit/:id', component: Edit },
-    { path: '/new', component: New }
+    { path: '/new', component: New },
+    { path: '/answers', component: Answer }
   ]
 
   return (isReady && municipalities && questions) ? (
