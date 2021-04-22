@@ -25,3 +25,14 @@ export const fetchQuiz = data => {
     })
     .catch(e => alert(e.response.data.message))
 }
+
+export const fetchAnswer = (token, data) => {
+  axios.post('/api/answers/one', data, {
+    headers: { Authorization: token }
+  })
+    .then(({ data }) => {
+      alert('Отчет успешно отправлен')
+      console.log(data)
+    })
+    .catch(e => alert(e.response.data.message))
+  }

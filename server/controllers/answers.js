@@ -31,7 +31,31 @@ export const sendQuiz = async (req, res) => {
 
 export const sendAnswer = async (req, res) => {
   try {
-    
+    const user = await User.findById(req.user.id)
+    if(!user)
+      return errorHandler(res, 403, 'Доступ ограничен')
+
+    const { question, municipality, date, evaluations, m, h } = req.body
+
+    const year = new Date(date).getFullYear()
+
+    await Answer.deleteOne({
+      question,
+      municipality,
+      date: { $gt: new Date(`${year}-01-01T00:00:00`), $lt: new Date(`${year + 1}-01-01T00:00:00`) }
+    })
+
+    const answer = new Answer({
+      question,
+      municipality,
+      date,
+      evaluations,
+      m,
+      h
+    })
+
+    await answer.save()
+    return res.json(answer)
   } catch (e) {
     console.log(e)
     return errorHandler(res)

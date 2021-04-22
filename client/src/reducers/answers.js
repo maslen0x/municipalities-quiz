@@ -3,8 +3,7 @@ import { SET_SHORT_ANSWERS, SET_FULL_ANSWERS, SET_RATING } from '../constants'
 const initialState = {
   short: [],
   full: [],
-  rating: [],
-  new: null
+  rating: []
 }
 
 const answers = (state = initialState, action) => {

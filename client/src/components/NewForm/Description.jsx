@@ -29,18 +29,18 @@ const Description = ({ type, description, m, h, criteries, onDecStep, onIncStep,
       switch(type) {
         case AVERAGE:
           return (!data.state.description || !averageCriterion) && 'Заполните все поля'
-  
+
         case PERCENTS:
           return (!data.state.m || !data.state.h) && 'Заполните все поля'
-  
+
         case SCORES:
           return !criteriesData.length && 'Введите хотя бы 1 критерий'
-  
+
         case CHECKBOXES:
           return !criteriesData.length && 'Введите хотя бы 1 критерий'
-  
+
         default:
-          return false
+          return null
       }
     }
     const errorsList = getErrors()

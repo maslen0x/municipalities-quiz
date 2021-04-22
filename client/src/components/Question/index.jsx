@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Answerers from './Answerers'
@@ -22,6 +22,24 @@ const Question = ({ _id, number, indicator, type, source, description, units, cr
   const [evaluations, setEvaluations] = useState([])
 
   const quiz = useSelector(({ quiz }) => quiz)
+
+  const getEvaluations = useCallback((answer, type) => {
+    if(!answer)
+      return []
+
+    const { evaluations, m, h } = answer
+
+    switch(type) {
+      case AVERAGE:
+        return evaluations[0]
+
+      case PERCENTS:
+        return { m, h }
+
+      default:
+        return evaluations
+    }
+  }, [])
 
   const onAddEvaluation = e => {
     e.preventDefault()
@@ -49,33 +67,14 @@ const Question = ({ _id, number, indicator, type, source, description, units, cr
       evaluations: type === AVERAGE ? [newEvaluations] : newEvaluations
     }
 
-    newEvaluations.length
-      ? dispatch(setAnswer(answer))
-      : dispatch(removeAnswer(_id))
+    dispatch(newEvaluations.length ? setAnswer(answer) : removeAnswer(_id))
   }
 
   useEffect(() => {
     const answer = quiz.find(answer => answer.question === _id)
-    if(answer) {
-      const getData = answer => {
-        const { evaluations, m, h } = answer
-        switch(type) {
-          case AVERAGE:
-            return evaluations[0]
-
-          case PERCENTS:
-            return { m, h }
-
-          default:
-            return evaluations
-        }
-      }
-      const data = getData(answer)
-      setEvaluations(data)
-    } else {
-      setEvaluations([])
-    }
-  }, [quiz, _id, type])
+    const data = getEvaluations(answer, type)
+    setEvaluations(data)
+  }, [quiz, _id, type, getEvaluations])
 
   return (
     <article className="question">
@@ -108,7 +107,13 @@ const Question = ({ _id, number, indicator, type, source, description, units, cr
           evaluations={evaluations}
           answerer={getAnswerer(source)}
           onRemove={onRemoveEvaluation}
-          getValues={evaluation => evaluation.map((value, index) => index === 0 ? value : `, ${value}`)}
+          getValues={evaluation => {
+            try {
+              return evaluation.map((value, index) => index === 0 ? value : `, ${value}`)
+            } catch {
+              return null
+            }
+          }}
         />
         <Result type={SCORES} evaluations={evaluations} />
       </>}

@@ -6,6 +6,7 @@ import municipalitiesRouter from './routes/municipalities.js'
 import questionsRouter from './routes/questions.js'
 import answersRouter from './routes/answers.js'
 import indicatorsRouter from './routes/indicators.js'
+import seedRouter from './routes/seed.js'
 
 const app = express()
 
@@ -18,6 +19,7 @@ app.use('/api/municipalities', municipalitiesRouter)
 app.use('/api/questions', questionsRouter)
 app.use('/api/answers', answersRouter)
 app.use('/api/indicators', indicatorsRouter)
+app.use('/api/seed', seedRouter)
 
 const listenApp = port => app.listen(port, () => console.log(`Server started on port ${port}`))
 

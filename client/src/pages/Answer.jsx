@@ -1,21 +1,23 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import Filter from '../components/Filter'
 import Question from '../components/Question'
 
-import { setQuiz } from '../actions/quiz'
+import { fetchAnswer, setQuiz } from '../actions/quiz'
 
 import useChange from '../hooks/useChange'
 
 const Answer = () => {
   const dispatch = useDispatch()
 
-  const data = useChange({
+  const initialData = {
     question: 'DEFAULT',
     municipality: 'DEFAULT',
     date: new Date().getFullYear()
-  })
+  }
+
+  const data = useChange(initialData)
 
   const token = useSelector(({ user }) => user.token)
   const quiz = useSelector(({ quiz }) => quiz)
@@ -23,17 +25,36 @@ const Answer = () => {
   const municipalities = useSelector(({ municipalities }) => municipalities)
 
   const onAdd = () => {
-    console.log('question', data.state.question)
-    console.log('municipality', data.state.municipality)
-    console.log('date', data.state.date)
+    const { question, municipality, date } = data.state
+
+    if(municipality === 'DEFAULT')
+      return alert('Выберите МО')
+
+    if(!date)
+      return alert('Введите год')
+
+    const answer = {
+      ...quiz.find(answer => answer.question === question),
+      municipality,
+      date: new Date(`01.01.${date} 12:00`).toJSON()
+    }
+    fetchAnswer(token, answer)
   }
 
   const onQuestionChange = e => {
     const { name, value } = e.target
     const { state, setState } = data
-    setState({ ...state, [name]: value})
-    // quiz.length && dispatch(setQuiz([]))
+    setState({ ...state, [name]: value })
   }
+
+  useEffect(() => {
+    quiz.length && localStorage.setItem('quiz', JSON.stringify(quiz))
+  }, [quiz])
+
+  useEffect(() => {
+    const localQuiz = JSON.parse(localStorage.getItem('quiz'))
+    localQuiz && dispatch(setQuiz(localQuiz))
+  }, [dispatch])
 
   return (
     <div className="answer">
@@ -60,9 +81,11 @@ const Answer = () => {
         </div>
         <div className="answer__form">
           {data.state.question !== 'DEFAULT' && (
-            <Question {...questions.find(question => question._id === data.state.question)} />
+            <>
+              <Question {...questions.find(question => question._id === data.state.question)} />
+              <button onClick={onAdd} className="answer__btn btn">Отправить</button>
+            </>
           )}
-          <button onClick={onAdd} className="answer__btn btn">Отправить</button>
         </div>
       </div>
     </div>
