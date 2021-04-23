@@ -1,4 +1,4 @@
-export const API_URL = 'http://176.28.64.201/municipalities-quiz/'
+export const API_URL = 'http://176.28.64.201:5000/municipalities-quiz/'
 
 export const AVERAGE = 'AVERAGE'
 export const SCORES = 'SCORES'
