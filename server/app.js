@@ -13,11 +13,11 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use('/municipalities-quiz/api/users', usersRouter)
-app.use('/municipalities-quiz/api/municipalities', municipalitiesRouter)
-app.use('/municipalities-quiz/api/questions', questionsRouter)
-app.use('/municipalities-quiz/api/answers', answersRouter)
-app.use('/municipalities-quiz/api/indicators', indicatorsRouter)
+app.use('/api/users', usersRouter)
+app.use('/api/municipalities', municipalitiesRouter)
+app.use('/api/questions', questionsRouter)
+app.use('/api/answers', answersRouter)
+app.use('/api/indicators', indicatorsRouter)
 
 const listenApp = port => app.listen(port, () => console.log(`Server started on port ${port}`))
 
