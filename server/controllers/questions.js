@@ -2,6 +2,8 @@ import User from '../models/User.js'
 import Question from '../models/Question.js'
 import Answer from '../models/Answer.js'
 
+import validation from '../validations/questions.js'
+
 import errorHandler from '../utils/errorHandler.js'
 
 export const create = async (req, res) => {
@@ -18,23 +20,9 @@ export const create = async (req, res) => {
     if(isExist)
       return errorHandler(res, 400, 'Показатель с таким наименованием уже существует')
 
-    if(!number || !indicator)
-      return errorHandler(res, 400, 'Введите номер и наименование показателя')
-
-    if(type === 'AVERAGE' && !units)
-      return errorHandler(res, 400, 'Введите единицы измерения')
-
-    if((type === 'AVERAGE' || type === 'PERCENTS') && !description)
-      return errorHandler(res, 400, 'Введите описание')
-
-    if((type === 'PERCENTS' && source !== 'FACTS') || (type !== 'PERCENTS' && source === 'FACTS'))
-      return errorHandler(res, 400, 'Для типа PERCENTS разрешен только источник FACTS')
-
-    if((type === 'SCORES' || type === 'CHECKBOXES') && !criteries.length)
-      return errorHandler(res, 400, 'Введите хотя бы 1 критерий')
-
-    if(type === 'PERCENTS' && (!m || !h))
-      return errorHandler(res, 400, 'Введите m (делимое) и h (делитель)')
+    const error = validation(req.body)
+    if(error)
+      return errorHandler(res, 400, error)
 
     const question = new Question({
       number,
@@ -80,23 +68,9 @@ export const update = async (req, res) => {
     if(question.type !== type)
       return errorHandler(res, 400, 'Запрещено менять тип показателя')
 
-    if((type === 'PERCENTS' && source !== 'FACTS') || (type !== 'PERCENTS' && source === 'FACTS'))
-      return errorHandler(res, 400, 'Для типа PERCENTS разрешен только источник FACTS')
-
-    if(!number || !indicator)
-      return errorHandler(res, 400, 'Введите номер и наименование показателя')
-
-    if((type === 'SCORES' || type === 'CHECKBOXES') && !criteries.length)
-      return errorHandler(res, 400, 'Введите хотя бы 1 критерий')
-
-    if(type === 'AVERAGE' && !units)
-      return errorHandler(res, 400, 'Введите единицы измерения')
-
-    if((type === 'AVERAGE' || type === 'PERCENTS') && !description)
-      return errorHandler(res, 400, 'Введите описание')
-
-    if(type === 'PERCENTS' && (!m || !h))
-      return errorHandler(res, 400, 'Введите m (делимое) и h (делитель)')
+    const error = validation(req.body)
+    if(error)
+      return errorHandler(res, 400, error)
 
     const result = await Question.findByIdAndUpdate(id, { $set: req.body }, { new: true })
 

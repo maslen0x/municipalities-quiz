@@ -3,11 +3,14 @@ import Question from '../models/Question.js'
 import Municipality from '../models/Municipality.js'
 import User from '../models/User.js'
 
+import validation from '../validations/answers.js'
+
 import groupArrayByField from '../utils/groupArrayByField.js'
 import groupArrayByYear from '../utils/groupArrayByYear.js'
 import countAnswerResult from '../utils/countAnswerResult.js'
 import getMunicipalityName from '../utils/getMunicipalityName.js'
 import getYear from '../utils/getYear.js'
+import getRatingResult from '../utils/getRatingResult.js'
 import errorHandler from '../utils/errorHandler.js'
 
 export const sendQuiz = async (req, res) => {
@@ -36,6 +39,10 @@ export const sendAnswer = async (req, res) => {
       return errorHandler(res, 403, 'Доступ ограничен')
 
     const { question, municipality, date, evaluations, m, h } = req.body
+
+    const error = validation(req.body)
+    if(error)
+      return errorHandler(res, 400, error)
 
     const year = new Date(date).getFullYear()
 
@@ -187,7 +194,7 @@ export const getRating = async (req, res) => {
       return yearGroup.map(questionGroup => {
         return questionGroup
           .map(answer => {
-            const question = questions.find(question => question._id.toString() === answer.question.toString())
+            const question = questions.find(question => question._id.toString() === answer.question+'')
             const { _id, municipality, date } = answer
             const { type, number, indicator, reverse } = question
 
@@ -205,41 +212,7 @@ export const getRating = async (req, res) => {
             return countAnswerResult(answer, type, reverse, obj)
           })
           .sort((a, b) => parseFloat(a.result) < parseFloat(b.result) ? 1 : -1)
-          .map((answer, index) => {
-            const between = (value, min, max) => value >= min && value <= max
-
-            const number = index + 1
-
-            if(between(number, 1, 5))
-              return {
-                ...answer,
-                result: 10
-              }
-
-            if(between(number, 6, 15))
-              return {
-                ...answer,
-                result: 7
-              }
-
-            if(between(number, 16, 25))
-              return {
-                ...answer,
-                result: 4
-              }
-
-            if(between(number, 26, 35))
-              return {
-                ...answer,
-                result: 2
-              }
-
-            if(number >= 36)
-              return {
-                ...answers,
-                result: 1
-              }
-          })
+          .map(getRatingResult)
       })
     })
 

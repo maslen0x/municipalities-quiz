@@ -35,6 +35,7 @@ const Answer = () => {
 
     const answer = {
       ...quiz.find(answer => answer.question === question),
+      question,
       municipality,
       date: new Date(`01.01.${date} 12:00`).toJSON()
     }
@@ -48,11 +49,11 @@ const Answer = () => {
   }
 
   useEffect(() => {
-    quiz.length && localStorage.setItem('quiz', JSON.stringify(quiz))
+    quiz.length && localStorage.setItem('report-by-indicator', JSON.stringify(quiz))
   }, [quiz])
 
   useEffect(() => {
-    const localQuiz = JSON.parse(localStorage.getItem('quiz'))
+    const localQuiz = JSON.parse(localStorage.getItem('report-by-indicator'))
     localQuiz && dispatch(setQuiz(localQuiz))
   }, [dispatch])
 

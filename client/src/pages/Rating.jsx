@@ -11,6 +11,7 @@ import useChange from '../hooks/useChange'
 
 import getYear from '../utils/getYear'
 import getQueryString from '../utils/getQueryString'
+import getRandom from '../utils/getRandom'
 
 const Rating = () => {
   const dispatch = useDispatch()
@@ -62,7 +63,7 @@ const Rating = () => {
                   {getYear(group[0].date)}
                 </p>
                 {group.map(quiz => (
-                  <RatingCard key={quiz.municipality} {...quiz} />
+                  <RatingCard key={getRandom()} {...quiz} quiz={quiz} />
                 ))}
               </li>
             ))}
