@@ -3,8 +3,10 @@ import { useSelector } from 'react-redux'
 
 import getMunicipalityName from '../utils/getMunicipalityName'
 
-const RatingCard = ({ municipality, place, result }) => {
+const RatingCard = ({ municipality, place, result, quiz }) => {
   const municipalities = useSelector(({ municipalities }) => municipalities)
+
+  console.log(getMunicipalityName(municipalities, municipality), quiz)
 
   return (
     <article className="rating__card rating-card card">

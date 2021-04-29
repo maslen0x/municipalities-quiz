@@ -8,6 +8,7 @@ import groupArrayByYear from '../utils/groupArrayByYear.js'
 import countAnswerResult from '../utils/countAnswerResult.js'
 import getMunicipalityName from '../utils/getMunicipalityName.js'
 import getYear from '../utils/getYear.js'
+import getRatingResult from '../utils/getRatingResult.js'
 import errorHandler from '../utils/errorHandler.js'
 
 export const sendQuiz = async (req, res) => {
@@ -205,41 +206,7 @@ export const getRating = async (req, res) => {
             return countAnswerResult(answer, type, reverse, obj)
           })
           .sort((a, b) => parseFloat(a.result) < parseFloat(b.result) ? 1 : -1)
-          .map((answer, index) => {
-            const between = (value, min, max) => value >= min && value <= max
-
-            const number = index + 1
-
-            if(between(number, 1, 5))
-              return {
-                ...answer,
-                result: 10
-              }
-
-            if(between(number, 6, 15))
-              return {
-                ...answer,
-                result: 7
-              }
-
-            if(between(number, 16, 25))
-              return {
-                ...answer,
-                result: 4
-              }
-
-            if(between(number, 26, 35))
-              return {
-                ...answer,
-                result: 2
-              }
-
-            if(number >= 36)
-              return {
-                ...answers,
-                result: 1
-              }
-          })
+          .map(getRatingResult)
       })
     })
 
