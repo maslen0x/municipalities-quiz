@@ -3,6 +3,8 @@ import Question from '../models/Question.js'
 import Municipality from '../models/Municipality.js'
 import User from '../models/User.js'
 
+import validation from '../validations/answers.js'
+
 import groupArrayByField from '../utils/groupArrayByField.js'
 import groupArrayByYear from '../utils/groupArrayByYear.js'
 import countAnswerResult from '../utils/countAnswerResult.js'
@@ -37,6 +39,10 @@ export const sendAnswer = async (req, res) => {
       return errorHandler(res, 403, 'Доступ ограничен')
 
     const { question, municipality, date, evaluations, m, h } = req.body
+
+    const error = validation(req.body)
+    if(error)
+      return errorHandler(res, 400, error)
 
     const year = new Date(date).getFullYear()
 
@@ -188,7 +194,7 @@ export const getRating = async (req, res) => {
       return yearGroup.map(questionGroup => {
         return questionGroup
           .map(answer => {
-            const question = questions.find(question => question._id.toString() === answer.question.toString())
+            const question = questions.find(question => question._id.toString() === answer.question+'')
             const { _id, municipality, date } = answer
             const { type, number, indicator, reverse } = question
 
